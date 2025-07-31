@@ -3,13 +3,17 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TwoFactorController;
+
+Route::get('/two-factor', [TwoFactorController::class, 'index'])->name('two-factor.index');
+Route::post('/two-factor', [TwoFactorController::class, 'store'])->name('two-factor.store');
 Route::get('/', function () {
     return view('welcome');
 });
 
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'twofactor'])
     ->name('dashboard');
 
 

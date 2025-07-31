@@ -61,6 +61,7 @@ public function resetTwoFactorCode()
     {
         return [
             'email_verified_at' => 'datetime',
+            'two_factor_expires_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
