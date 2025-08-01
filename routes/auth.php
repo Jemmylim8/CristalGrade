@@ -10,6 +10,8 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
@@ -56,4 +58,18 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+
+Route::get('/redirect-after-login', function (Request $request) {
+    $user = Auth::user();
+
+    if ($user->role === 'admin') {
+        return redirect('/dashboard/admin');
+    } elseif ($user->role === 'faculty') {
+        return redirect('/dashboard/faculty');
+    } else {
+        return redirect('/dashboard/student');
+    }
+});
+
 });

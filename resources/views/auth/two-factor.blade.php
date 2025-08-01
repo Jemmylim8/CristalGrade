@@ -21,6 +21,22 @@
                 class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                 Verify
             </button>
+            
+            <div class="mt-4">
+                <button type="submit" 
+                    class="inline-block px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md">
+                        ✅ Verify Code
+                </button>
+</div>
         </form>
+        <div class="mt-4">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" 
+                        class="mt-4 inline-block px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md">
+                         ← Back to Login
+                    </button>
+                </form>
+            </div>
     </div>
 </x-guest-layout>
