@@ -14,8 +14,15 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
+    
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+        
+        <div class="min-h-screen bg-gradient-to-b from-[#553FEE]  to-[#288FD9]">
+
+ 
+
+
+
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -28,9 +35,14 @@
             @endisset
 
             <!-- Page Content -->
-            <main>
-                {{ $slot }}
+            <main class="py-6">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="bg-white rounded-3xl shadow-2xl p-10">
+                        {{ $slot }}
+                    </div>
+                </div>
             </main>
+
         </div>
     </body>
 </html>

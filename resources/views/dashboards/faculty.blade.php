@@ -6,37 +6,38 @@
             @for ($year = 1; $year <= 4; $year++)
                 @php
                     $colors = [
-                        1 => 'border-blue-300 bg-blue-50 hover:bg-blue-100',
-                        2 => 'border-green-300 bg-green-50 hover:bg-green-100',
-                        3 => 'border-yellow-300 bg-yellow-50 hover:bg-yellow-100',
-                        4 => 'border-orange-300 bg-orange-50 hover:bg-orange-100',
+                        1 => 'bg-blue-100 border-blue-300',
+                        2 => 'bg-green-100 border-green-300',
+                        3 => 'bg-yellow-100 border-yellow-300',
+                        4 => 'bg-orange-100 border-orange-300',
                     ];
                 @endphp
 
-                <div class="rounded-xl border {{ $colors[$year] }} p-6 shadow-sm hover:shadow-lg transition transform hover:-translate-y-1">
-                    <h2 class="text-lg font-semibold mb-4 text-gray-700">
-                        Year {{ $year }}
-                    </h2>
+                <!-- Entire Year Box is Clickable -->
+                <a href="{{ url('/faculty/year/' . $year) }}" class="block">
+                    <div class="rounded-2xl border-2 {{ str_replace('bg-', 'border-', $colors[$year]) }} bg-white p-5 shadow-md hover:shadow-lg transition transform hover:-translate-y-1">
+                        <h2 class="text-xl font-bold mb-4 text-gray-800">Year {{ $year }}</h2>
 
-                    <ul class="space-y-2 mb-4">
-                        @forelse ($classes->where('year_level', $year)->take(3) as $class)
-                            <li class="text-sm text-gray-600">{{ $class->subject }} - {{ $class->section }}</li>
-                        @empty
-                            <li class="text-gray-400 text-sm italic">No classes yet.</li>
-                        @endforelse
-                    </ul>
+                        <!-- Subject Rectangles -->
+                        <div class="flex flex-wrap gap-2">
+                            @forelse ($classes->where('year_level', $year)->take(6) as $class)
+                                <div class="px-3 py-2 text-sm font-medium text-gray-700 rounded-md shadow-sm border {{ $colors[$year] }}">
+                                    {{ strtoupper($class->subject) }} - {{ strtoupper($class->name) }}
+                                </div>
+                            @empty
+                                <p class="text-gray-400 text-sm italic">No classes yet.</p>
+                            @endforelse
+                        </div>
 
-                    <div class="flex space-x-2">
-                        <a href="{{ route('classes.create') }}?year={{ $year }}"
-                           class="px-3 py-1.5 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow">
-                            + Create Class
-                        </a>
-                        <a href="#"
-                           class="px-3 py-1.5 text-sm text-blue-600 hover:text-blue-700">
-                            View All
-                        </a>
+                        <!-- Create Button at bottom -->
+                        <div class="mt-4">
+                            <a href="{{ route('classes.create') }}?year={{ $year }}"
+                               class="inline-flex items-center px-3 py-1.5 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow">
+                                ➕ Create Class
+                            </a>
+                        </div>
                     </div>
-                </div>
+                </a>
             @endfor
         </div>
     </div>
