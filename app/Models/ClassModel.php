@@ -15,6 +15,7 @@ class ClassModel extends Model
         'section',
         'faculty_id',
         'join_code',
+        'year_level'
     ];
     //To show The classes belonging to the Faculty using
     public function faculty()
@@ -26,10 +27,6 @@ class ClassModel extends Model
     {
         return $this->belongsToMany(User::class, 'class_student', 'class_id', 'student_id');
     }
-    // to use $class->students; = all students in a class
-    public function classes()
-    {
-        return $this->belongsToMany(ClassModel::class, 'class_student', 'student_id', 'class_id');
-    }
+    
 
 }

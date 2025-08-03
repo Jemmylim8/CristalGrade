@@ -1,4 +1,8 @@
 <x-app-layout>
+    <a href="{{ route('student.classes') }}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+    📚 My Classes
+</a>
+
     <div class="p-6">
         <h1 class="text-3xl font-bold text-purple-700">Student Dashboard</h1>
         <p class="mt-4 text-gray-600">Welcome, Student. You can view your subjects, activities, and exam scores here.</p>

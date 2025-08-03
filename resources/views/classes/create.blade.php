@@ -47,6 +47,13 @@
                 <input type="text" name="section" value="{{ old('section') }}" 
                     class="w-full border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-200" required>
             </div>
+            <div class="mb-4">
+                <label for="year_level" class="block text-sm font-medium text-gray-700">Year Level</label>
+                <input type="hidden" name="year_level" value="{{ $selectedYear }}">
+                <p class="mb-4 text-gray-700 font-medium">
+                    Creating class for <span class="font-bold">Year {{ $selectedYear }}</span>
+                </p>    
+            </div>
 
             {{-- Submit Button --}}
             <div class="mt-6">

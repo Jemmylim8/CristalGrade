@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TwoFactorController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\ClassController;
-
+use App\Http\Controllers\FacultyDashboardController;
 
 Route::get('/two-factor', [TwoFactorController::class, 'index'])->name('two-factor.index');
 Route::post('/two-factor', [TwoFactorController::class, 'store'])->name('two-factor.store');
@@ -44,7 +44,8 @@ Route::middleware(['auth', 'verified', 'twofactor'])->group(function () {
 
     // ✅ All dashboards now also require verification
     Route::get('/dashboard/admin', fn() => view('dashboards.admin'));
-    Route::get('/dashboard/faculty', fn() => view('dashboards.faculty'));
+    // Route::get('/dashboard/faculty', fn() => view('dashboards.faculty'));
+    Route::get('/dashboard/faculty', [FacultyDashboardController::class, 'index']);
     Route::get('/dashboard/student', fn() => view('dashboards.student'));
 });
 
@@ -65,6 +66,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 //Class With students
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/classes/{class}', [\App\Http\Controllers\ClassController::class, 'show'])->name('classes.show');
+});
+//Student View Classes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/student/classes', [\App\Http\Controllers\StudentClassController::class, 'index'])->name('student.classes');
 });
 
 

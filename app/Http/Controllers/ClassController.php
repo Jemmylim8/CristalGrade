@@ -21,9 +21,10 @@ class ClassController extends Controller
     }
 
     // Show class creation form
-    public function create()
+    public function create(Request $request)
     {
-        return view('classes.create');
+        $selectedYear = $request->query('year'); // grab ?year= from URL
+        return view('classes.create', compact('selectedYear'));
     }
 
     //  Store new class
@@ -33,6 +34,7 @@ class ClassController extends Controller
             'name' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
             'section' => 'required|string|max:50',
+            'year_level' => 'required|integer|between:1,4',
         ]);
 
         ClassModel::create([
@@ -41,6 +43,7 @@ class ClassController extends Controller
             'section' => $request->section,
             'faculty_id' => auth()->id(),
             'join_code' => strtoupper(Str::random(6)), // generate join code
+            'year_level' => $request->year_level,
         ]);
 
         return redirect()->route('classes.index')->with('success', 'Class created successfully!');
