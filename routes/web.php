@@ -62,6 +62,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/classes/join', [\App\Http\Controllers\ClassController::class, 'joinClass'])->name('classes.join');
 });
+//Class With students
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/classes/{class}', [\App\Http\Controllers\ClassController::class, 'show'])->name('classes.show');
+});
 
 
 // Route::get('/dashboard', [DashboardController::class, 'index'])

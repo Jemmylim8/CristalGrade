@@ -63,5 +63,14 @@ class ClassController extends Controller
 
         return back()->with('success', 'You have successfully joined the class!');
     }
+    //Load Students for a class
+    public function show(ClassModel $class)
+    {
+        // Load students for that class
+        $students = $class->students;
+
+        return view('classes.show', compact('class', 'students'));
+    }
+
 
 }

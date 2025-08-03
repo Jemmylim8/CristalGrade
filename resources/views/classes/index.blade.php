@@ -55,5 +55,21 @@
         </table>
     </div>
 </div>
+            @foreach ($classes as $class)
+                <div class="p-4 border rounded mb-4">
+                    <h2 class="font-bold text-lg">{{ $class->subject }} - {{ $class->section }}</h2>
+                    <p>Join Code: <strong>{{ $class->join_code }}</strong></p>
+                    <p class="text-sm text-gray-600 mb-2">
+                        Students Enrolled: <strong>{{ $class->students->count() }}</strong>
+                    </p>
+
+                    <a href="{{ route('classes.show', $class->id) }}" 
+                    class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+                    View Students
+                    </a>
+                </div>
+            @endforeach
+
+
 </x-app-layout>
 
