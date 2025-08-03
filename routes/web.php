@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TwoFactorController;
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\ClassController;
+
 
 Route::get('/two-factor', [TwoFactorController::class, 'index'])->name('two-factor.index');
 Route::post('/two-factor', [TwoFactorController::class, 'store'])->name('two-factor.store');
@@ -46,6 +48,16 @@ Route::middleware(['auth', 'verified', 'twofactor'])->group(function () {
     Route::get('/dashboard/student', fn() => view('dashboards.student'));
 });
 
+
+
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    // ✅ Classes Index & Create
+    Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
+    Route::get('/classes/create', [ClassController::class, 'create'])->name('classes.create');
+    Route::post('/classes', [ClassController::class, 'store'])->name('classes.store');
+
+});
 
 // Route::get('/dashboard', [DashboardController::class, 'index'])
 //     ->middleware(['auth', 'verified', 'twofactor'])
