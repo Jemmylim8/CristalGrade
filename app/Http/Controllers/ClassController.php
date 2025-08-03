@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class ClassController extends Controller
 {
-    // ✅ Show all classes for admin, or faculty's own classes
+    //  Show all classes for admin, or faculty's own classes
     public function index()
     {
         if (auth()->user()->role === 'admin') {
@@ -20,13 +20,13 @@ class ClassController extends Controller
         return view('classes.index', compact('classes'));
     }
 
-    // ✅ Show class creation form
+    // Show class creation form
     public function create()
     {
         return view('classes.create');
     }
 
-    // ✅ Store new class
+    //  Store new class
     public function store(Request $request)
     {
         $request->validate([
@@ -45,4 +45,23 @@ class ClassController extends Controller
 
         return redirect()->route('classes.index')->with('success', 'Class created successfully!');
     }
+    //Join Class
+    public function joinClass(Request $request)
+    {
+        $request->validate([
+            'join_code' => 'required|string|size:6',
+        ]);
+
+        $class = ClassModel::where('join_code', $request->join_code)->first();
+
+        if (!$class) {
+            return back()->withErrors(['join_code' => 'Invalid class code.']);
+        }
+
+        // attach student to class
+        auth()->user()->classes()->syncWithoutDetaching([$class->id]);
+
+        return back()->with('success', 'You have successfully joined the class!');
+    }
+
 }

@@ -65,4 +65,9 @@ public function resetTwoFactorCode()
             'password' => 'hashed',
         ];
     }
+    // to use $class->students; = all students in a class
+    public function classes()
+    {
+        return $this->belongsToMany(ClassModel::class, 'class_student', 'student_id', 'class_id');
+    }
 }

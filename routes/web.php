@@ -49,7 +49,7 @@ Route::middleware(['auth', 'verified', 'twofactor'])->group(function () {
 });
 
 
-
+// Class Creation Routes
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // ✅ Classes Index & Create
@@ -58,6 +58,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/classes', [ClassController::class, 'store'])->name('classes.store');
 
 });
+//Class Joining Route
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/classes/join', [\App\Http\Controllers\ClassController::class, 'joinClass'])->name('classes.join');
+});
+
 
 // Route::get('/dashboard', [DashboardController::class, 'index'])
 //     ->middleware(['auth', 'verified', 'twofactor'])
