@@ -34,6 +34,7 @@ class ClassController extends Controller
             'name' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
             'section' => 'required|string|max:50',
+            'schedule' => 'required|string|max:50',
             'year_level' => 'required|integer|between:1,4',
         ]);
 
@@ -41,6 +42,7 @@ class ClassController extends Controller
             'name' => $request->name,
             'subject' => $request->subject,
             'section' => $request->section,
+            'schedule' => $request->schedule,
             'faculty_id' => auth()->id(),
             'join_code' => strtoupper(Str::random(6)), // generate join code
             'year_level' => $request->year_level,
@@ -73,6 +75,17 @@ class ClassController extends Controller
         $students = $class->students;
 
         return view('classes.show', compact('class', 'students'));
+    }
+    public function yearLevel($year_level)
+    {
+        $facultyId = auth()->id();
+
+        // Fetch all classes for this faculty in the given year level
+        $classes = ClassModel::where('faculty_id', $facultyId)
+            ->where('year_level', $year_level)
+            ->get();
+
+        return view('faculty.year_level', compact('classes', 'year_level'));
     }
 
 

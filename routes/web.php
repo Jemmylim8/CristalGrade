@@ -42,7 +42,7 @@ Route::middleware(['auth', 'verified', 'twofactor'])->group(function () {
         };
     })->name('dashboard');
 
-    // ✅ All dashboards now also require verification
+    //  All dashboards now also require verification
     Route::get('/dashboard/admin', fn() => view('dashboards.admin'));
     // Route::get('/dashboard/faculty', fn() => view('dashboards.faculty'));
     Route::get('/dashboard/faculty', [FacultyDashboardController::class, 'index']);
@@ -53,7 +53,7 @@ Route::middleware(['auth', 'verified', 'twofactor'])->group(function () {
 // Class Creation Routes
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // ✅ Classes Index & Create
+    //  Classes Index & Create
     Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
     Route::get('/classes/create', [ClassController::class, 'create'])->name('classes.create');
     Route::post('/classes', [ClassController::class, 'store'])->name('classes.store');
@@ -71,7 +71,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/student/classes', [\App\Http\Controllers\StudentClassController::class, 'index'])->name('student.classes');
 });
-
+// Faculty year level detail
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/faculty/year/{year_level}', [ClassController::class, 'yearLevel'])
+        ->name('faculty.yearLevel');
+});
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard/student', [\App\Http\Controllers\StudentDashboardController::class, 'index'])
+        ->name('dashboard.student');
+});
 
 // Route::get('/dashboard', [DashboardController::class, 'index'])
 //     ->middleware(['auth', 'verified', 'twofactor'])

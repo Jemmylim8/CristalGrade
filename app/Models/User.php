@@ -40,6 +40,7 @@ public function resetTwoFactorCode()
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
