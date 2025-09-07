@@ -7,6 +7,7 @@ use App\Http\Controllers\TwoFactorController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\FacultyDashboardController;
+use App\Http\Controllers\ActivityController;
 
 Route::get('/two-factor', [TwoFactorController::class, 'index'])->name('two-factor.index');
 Route::post('/two-factor', [TwoFactorController::class, 'store'])->name('two-factor.store');
@@ -67,6 +68,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/classes/{class}', [\App\Http\Controllers\ClassController::class, 'show'])->name('classes.show');
 });
+//Class remove student enrolled
+Route::delete('/classes/{class}/students/{student}', [ClassController::class, 'removeStudent'])
+    ->name('classes.students.remove');
+
 //Student View Classes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/student/classes', [\App\Http\Controllers\StudentClassController::class, 'index'])->name('student.classes');
@@ -80,6 +85,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/student', [\App\Http\Controllers\StudentDashboardController::class, 'index'])
         ->name('dashboard.student');
 });
+//Adding Activity
+// Activities inside a class
+// Activities inside a class
+Route::middleware(['auth'])->group(function () {
+    Route::get('/classes/{class}/activities', [ActivityController::class, 'index'])->name('activities.index');
+    Route::get('/classes/{class}/activities/create', [ActivityController::class, 'create'])->name('activities.create');
+    Route::post('/classes/{class}/activities', [ActivityController::class, 'store'])->name('activities.store');
+    Route::get('/classes/{class}/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
+    Route::put('/classes/{class}/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
+    Route::delete('/classes/{class}/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+
+    // Save all scores from the class page
+    Route::post('/classes/{class}/activities/scores', [ActivityController::class, 'saveScores'])
+        ->name('activities.scores.save');
+});
+
+//Score SAving
+
+
+
 
 // Route::get('/dashboard', [DashboardController::class, 'index'])
 //     ->middleware(['auth', 'verified', 'twofactor'])

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ClassModel;
 use Illuminate\Support\Str;
+use App\Models\Activity;
+use App\Models\User;
+
 
 class ClassController extends Controller
 {
@@ -68,14 +71,17 @@ class ClassController extends Controller
 
         return back()->with('success', 'You have successfully joined the class!');
     }
-    //Load Students for a class
-    public function show(ClassModel $class)
-    {
-        // Load students for that class
-        $students = $class->students;
+    //Load Students and Activvites for a class
+public function show(ClassModel $class)
+{
+    // Load students and activities
+    $students = $class->students()->get();
+    $activities = $class->activities()->get();
 
-        return view('classes.show', compact('class', 'students'));
-    }
+    return view('classes.show', compact('class', 'students', 'activities'));
+}
+
+
     public function yearLevel($year_level)
     {
         $facultyId = auth()->id();
@@ -86,6 +92,32 @@ class ClassController extends Controller
             ->get();
 
         return view('faculty.year_level', compact('classes', 'year_level'));
+    }
+
+public function storeActivity(Request $request, $classId)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'max_score' => 'required|integer|min:1',
+        ]);
+
+        Activity::create([
+            'class_id' => $classId,
+            'title' => $request->title,
+            'description' => $request->description,
+            'max_score' => $request->max_score,
+        ]);
+
+        return redirect()->route('classes.show', $classId)
+            ->with('success', 'Activity created successfully!');
+    }
+    public function removeStudent(ClassModel $class, User $student)
+    {
+        // Detach student from this class
+        $class->students()->detach($student->id);
+
+        return redirect()->back()->with('success', $student->name . ' has been removed from the class.');
     }
 
 
