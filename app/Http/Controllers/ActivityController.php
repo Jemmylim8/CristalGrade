@@ -98,48 +98,6 @@ public function showScores(ClassModel $class)
 
     return view('classes.show', compact('class', 'activities', 'students'));
 }
-public function saveScores(Request $request, ClassModel $class)
-{
-    // Quick debug helper if you want to inspect submitted payload:
-    // uncomment the next line, submit form, observe the payload, then remove.
-    // dd($request->all());
-
-    $data = $request->validate([
-        'scores' => 'required|array',
-        'scores.*.*' => 'nullable|integer|min:0',
-    ]);
-
-    $scores = $data['scores'];
-
-    // Detect shape: prefer activity-first (scores[activity_id][student_id])
-    $firstKey = array_key_first($scores);
-    $isActivityFirst = Activity::where('id', $firstKey)->exists();
-
-    if ($isActivityFirst) {
-        // scores[activity_id][student_id]
-        foreach ($scores as $activityId => $studentsScores) {
-            foreach ($studentsScores as $studentId => $scoreValue) {
-                Score::updateOrCreate(
-                    ['activity_id' => $activityId, 'student_id' => $studentId],
-                    ['score' => $scoreValue]
-                );
-            }
-        }
-    } else {
-        // scores[student_id][activity_id] (transpose)
-        foreach ($scores as $studentId => $activitiesScores) {
-            foreach ($activitiesScores as $activityId => $scoreValue) {
-                Score::updateOrCreate(
-                    ['activity_id' => $activityId, 'student_id' => $studentId],
-                    ['score' => $scoreValue]
-                );
-            }
-        }
-    }
-
-    return redirect()->route('classes.show', $class->id)
-                     ->with('success', 'Scores saved successfully.');
-}
 
 
 

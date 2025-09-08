@@ -77,5 +77,10 @@ public function resetTwoFactorCode()
                     ->withPivot('score')
                     ->withTimestamps();
     }
+   public function scores()
+    {
+        return $this->hasMany(Score::class, 'user_id');
+    }
 
-}
+ }
+

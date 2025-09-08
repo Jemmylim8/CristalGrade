@@ -30,9 +30,11 @@ class Activity extends Model
                     ->withTimestamps();
     }
     // Scores for this activity
-    public function scores()
+   public function scores()
     {
-        return $this->hasMany(Score::class, 'activity_id');
+        return $this->hasMany(Score::class);
     }
+
+
 
 }

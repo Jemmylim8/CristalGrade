@@ -72,14 +72,37 @@ class ClassController extends Controller
         return back()->with('success', 'You have successfully joined the class!');
     }
     //Load Students and Activvites for a class
-public function show(ClassModel $class)
+public function show(\App\Models\ClassModel $class)
 {
-    // Load students and activities
+    // load students & activities
     $students = $class->students()->get();
     $activities = $class->activities()->get();
 
-    return view('classes.show', compact('class', 'students', 'activities'));
+    // collect the list of student keys we will use in the blade
+    $studentKeys = $students->map(function($s){
+        return $s->student_id ?? $s->student_id ?? $s->id;
+    })->unique()->values()->toArray();
+
+    $activityIds = $activities->pluck('id')->toArray();
+
+    // load existing scores only for these students & activities
+    $scoresRaw = \App\Models\Score::whereIn('student_id', $studentKeys)   // if your scores table uses user_id
+                  ->whereIn('activity_id', $activityIds)
+                  ->get();
+
+    // build nested array: $scores[user_or_student_id][activity_id] = score
+    $scores = [];
+    foreach ($scoresRaw as $r) {
+        $scores[$r->student_id][$r->activity_id] = $r->score;
+    }
+
+    // if your scores table uses student_id column, adjust query & mapping above:
+    // whereIn('student_id', $studentKeys) and $scores[$r->student_id][$r->activity_id] = $r->score;
+
+    return view('classes.show', compact('class','students','activities','scores'));
 }
+
+
 
 
     public function yearLevel($year_level)
@@ -99,14 +122,14 @@ public function storeActivity(Request $request, $classId)
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'max_score' => 'required|integer|min:1',
+            'total_score' => 'required|integer|min:1',
         ]);
 
         Activity::create([
             'class_id' => $classId,
             'title' => $request->title,
             'description' => $request->description,
-            'max_score' => $request->max_score,
+            'total_score' => $request->max_score,
         ]);
 
         return redirect()->route('classes.show', $classId)

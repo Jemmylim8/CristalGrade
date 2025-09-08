@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\FacultyDashboardController;
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\ScoreController;
+
 
 Route::get('/two-factor', [TwoFactorController::class, 'index'])->name('two-factor.index');
 Route::post('/two-factor', [TwoFactorController::class, 'store'])->name('two-factor.store');
@@ -88,21 +90,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
 //Adding Activity
 // Activities inside a class
 // Activities inside a class
-Route::middleware(['auth'])->group(function () {
-    Route::get('/classes/{class}/activities', [ActivityController::class, 'index'])->name('activities.index');
-    Route::get('/classes/{class}/activities/create', [ActivityController::class, 'create'])->name('activities.create');
-    Route::post('/classes/{class}/activities', [ActivityController::class, 'store'])->name('activities.store');
-    Route::get('/classes/{class}/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
-    Route::put('/classes/{class}/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
-    Route::delete('/classes/{class}/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/classes/{class}/activities', [ActivityController::class, 'index'])->name('activities.index');
+//     Route::get('/classes/{class}/activities/create', [ActivityController::class, 'create'])->name('activities.create');
+//     Route::post('/classes/{class}/activities', [ActivityController::class, 'store'])->name('activities.store');
+//     Route::get('/classes/{class}/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
+//     Route::put('/classes/{class}/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
+//     Route::delete('/classes/{class}/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
 
-    // Save all scores from the class page
-    Route::post('/classes/{class}/activities/scores', [ActivityController::class, 'saveScores'])
-        ->name('activities.scores.save');
-});
+//     // Save all scores from the class page
+//     Route::post('/classes/{class}/activities/scores', [ActivityController::class, 'saveScores'])
+//         ->name('activities.scores.save');
+// });
 
-//Score SAving
+// //Score SAving
+// Route::post('/classes/{class}/scores/save', [ScoreController::class, 'saveScores'])
+//     ->name('scores.save');
 
+
+//     Route::middleware(['auth'])->group(function () {
+//         Route::get('/activities/{activity}/scores', [ScoreController::class, 'index'])->name('scores.index');
+//         Route::get('/activities/{activity}/scores/edit', [ScoreController::class, 'edit'])->name('scores.edit');
+//         Route::post('/activities/{activity}/scores', [ScoreController::class, 'update'])->name('scores.update');
+//     });
 
 
 
@@ -127,11 +137,37 @@ Route::middleware(['auth'])->group(function () {
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
+// List all activities in a class
+Route::get('/classes/{class}/activities', [ActivityController::class, 'index'])->name('activities.index');
+
+// Create new activity
+Route::get('/classes/{class}/activities/create', [ActivityController::class, 'create'])->name('activities.create');
+Route::post('/classes/{class}/activities', [ActivityController::class, 'store'])->name('activities.store');
+
+// Edit activity
+Route::get('/classes/{class}/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
+Route::put('/classes/{class}/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
+
+// Delete activity
+Route::delete('/classes/{class}/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+// Show scores for a single activity
+Route::get('/activities/{activity}/scores', [ScoreController::class, 'showScores'])->name('scores.show');
+
+// Edit scores form for a single activity
+Route::get('/activities/{activity}/scores/edit', [ScoreController::class, 'edit'])->name('scores.edit');
+
+// Save/update scores for a single activity
+Route::post('/classes/{class}/scores', [ScoreController::class, 'update'])->name('scores.update');
+
+// Route::post('/activities/{activity}/scores', [ScoreController::class, 'update'])->name('scores.update');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
 
 require __DIR__.'/auth.php';

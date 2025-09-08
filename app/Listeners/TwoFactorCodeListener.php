@@ -27,10 +27,11 @@ class TwoFactorCodeListener
         $user->generateTwoFactorCode();
 
         // Send email
-        \Mail::raw("Your CristalGrade 2FA code is: {$user->two_factor_code}", function ($message) use ($user) {
+        \Mail::send('emails.twofactor', ['user' => $user], function ($message) use ($user) {
             $message->to($user->email)
-                    ->subject('Your 2FA Code');
+                    ->subject('CristalGrade Verification Code');
         });
+
     }
     }
 }

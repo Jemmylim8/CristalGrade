@@ -9,13 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up(): void
+    public function up(): void
     {
         Schema::create('scores', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('activity_id')->constrained()->onDelete('cascade');
-            $table->decimal('score', 5, 2)->nullable(); // nullable until entered
+            $table->foreignId('activity_id')->constrained('activities')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // student user
+            $table->decimal('score', 5, 2)->nullable();
             $table->timestamps();
         });
     }
