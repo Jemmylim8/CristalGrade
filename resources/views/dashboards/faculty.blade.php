@@ -1,4 +1,9 @@
 <x-app-layout>
+    @if (session('success'))
+    <div role="alert" class="mb-4 p-4 text-green-800 bg-green-100 border border-green-300 rounded-md">
+        {{ session('success') }}
+    </div>
+@endif
     <div x-data="{ openModal: false }" x-cloak 
          class="min-h-screen p-8 flex justify-center">
 
@@ -79,4 +84,12 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        setTimeout(() => {
+            const alert = document.querySelector('[role="alert"]');
+            if (alert) alert.remove();
+        }, 3000);
+    </script>
+
 </x-app-layout>

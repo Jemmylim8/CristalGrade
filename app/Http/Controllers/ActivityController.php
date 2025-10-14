@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\ClassModel;
 use App\Models\Activity;
 use Illuminate\Http\Request;
-use App\Models\Score;
 use App\Models\User;
 
 class ActivityController extends Controller
@@ -47,7 +46,7 @@ class ActivityController extends Controller
     // Show edit form
     public function edit(ClassModel $class, Activity $activity)
     {
-        return view('activities.edit', compact('class', 'activity'));
+        return view('classes.edit', compact('class', 'activity'));
     }
 
     // Update activity

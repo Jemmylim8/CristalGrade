@@ -2,10 +2,12 @@
 <div class="container mx-auto p-6">
 
     <div class="flex justify-between items-center mb-4">
+         <a href="{{ route('dashboard.faculty') }}"
+               class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+               Back
+            </a>
         <h1 class="text-2xl font-bold uppercase">{{ $class->name }} – {{$class->subject}}</h1>
         <h2 class="uppercase">Join Code: {{$class->join_code}}<br>{{$class->schedule}}</h2>
-        
-        
 
         @if(auth()->user()->role === 'faculty')
             <a href="{{ route('activities.create', $class->id) }}"
@@ -23,29 +25,47 @@
     @endif
 
     @if(auth()->user()->role === 'faculty')
-        <form method="POST" action="{{ route('scores.update', $class->id) }}">
+        {{-- MAIN FORM: Save Scores --}}
+        <form id="saveScoresForm" method="POST" action="{{ route('scores.update', $class->id) }}">
             @csrf
             <div class="overflow-x-auto">
                 <table class="table-auto border-collapse border w-full">
                     <thead>
                         <tr class="bg-gray-100">
                             <th class="border px-4 py-2">Student</th>
+
                             @foreach($activities as $activity)
-                                <th class="border px-4 py-2">
-                                    {{ $activity->name }}<br>
-                                    <small class="text-gray-600">(Max: {{ $activity->total_score }})</small>
+                                <th class="border px-4 py-2 align-top">
+                                    <div class="flex flex-col items-center space-y-1">
+                                        <div class="font-semibold">{{ $activity->name }}</div>
+                                        <small class="text-gray-600">(Max: {{ $activity->total_score }})</small>
+
+                                        <div class="flex space-x-1 mt-1">
+                                            <a href="{{ route('activities.edit', [$class->id, $activity->id]) }}"
+                                               class="bg-yellow-400 hover:bg-yellow-500 text-white text-xs px-2 py-1 rounded">
+                                                Edit
+                                            </a>
+
+                                            {{-- DELETE BUTTON triggers JS form submission --}}
+                                            <button type="button"
+                                                    onclick="deleteActivity({{ $class->id }}, {{ $activity->id }})"
+                                                    class="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded">
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </div>
                                 </th>
                             @endforeach
                         </tr>
                     </thead>
+
                     <tbody>
                         @foreach($students as $student)
-                            @php
-                                // Must match DB column scores.student_id
-                                $sid = $student->id;
-                            @endphp
+                            @php $sid = $student->id; @endphp
                             <tr>
-                                <td class="border px-4 py-2 font-semibold">{{ $student->name ?? $student->full_name ?? 'Student' }}</td>
+                                <td class="border px-4 py-2 font-semibold">
+                                    {{ $student->name ?? $student->full_name ?? 'Student' }}
+                                </td>
 
                                 @foreach($activities as $activity)
                                     @php
@@ -73,13 +93,26 @@
                 </button>
             </div>
         </form>
+
+        {{-- HIDDEN DELETE FORM (outside main form) --}}
+        <form id="deleteActivityForm" method="POST" style="display:none;">
+            @csrf
+            @method('DELETE')
+        </form>
+
+        {{-- SCRIPT --}}
+        <script>
+            function deleteActivity(classId, activityId) {
+                if (!confirm('Are you sure you want to delete this activity?')) return;
+
+                const form = document.getElementById('deleteActivityForm');
+                form.action = `/classes/${classId}/activities/${activityId}`;
+                form.submit();
+            }
+        </script>
+
     @else
-
-
- <!--STUDENT  -->
-
-
-        {{-- Student view (read-only) --}}
+        {{-- STUDENT READ-ONLY VIEW --}}
         <div class="overflow-x-auto">
             <table class="table-auto border-collapse border w-full">
                 <thead>
@@ -93,9 +126,9 @@
                     @php $myId = auth()->user()->id; @endphp
                     @foreach($activities as $activity)
                         <tr>
-                            <td class="border px-4 py-2">{{ $activity->name }}-{{ $activity->type}}</td>
+                            <td class="border px-4 py-2">{{ $activity->name }} - {{ $activity->type }}</td>
                             <td class="border px-4 py-2 text-center">{{ $scores[$myId][$activity->id] ?? '—' }} / {{ $activity->total_score }}</td>
-                            <td class="border px-4 py-2 text-center">{{ $activity->due_date}}</td>
+                            <td class="border px-4 py-2 text-center">{{ $activity->due_date }}</td>
                         </tr>
                     @endforeach
                 </tbody>

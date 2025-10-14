@@ -23,9 +23,7 @@
             {{-- Welcome Text --}}
             <div class="space-y-2 mt-20">
                 <p class="text-white text-lg tracking-widest">– WELCOME –</p>
-                <h1 class="text-5xl md:text-6xl font-extrabold text-white">
-                    Cristal<span class="text-blue-900">Grade</span>
-                </h1>
+                <img src="{{ asset('images/logoSmall.png') }}" class="w-1668 h-618 mx-auto flex items-center">
                 <p class="text-white text-sm">2024-2025</p>
             </div>
         </div>

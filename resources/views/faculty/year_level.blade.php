@@ -17,14 +17,35 @@
                     <ul class="divide-y divide-gray-200">
                         @foreach($classes as $class)
                             <li class="flex justify-between items-center py-2">
-                                <span>{{ $class->name }}</span>
-                                <a href="{{ route('classes.show', $class->id) }}" 
-                                   class="inline-flex items-center px-3 py-1 bg-blue-500 text-white text-sm font-medium rounded hover:bg-blue-600">
-                                    Open Class
-                                </a>
+                                <div class="flex flex-col">
+                                    <span class="font-semibold text-gray-800">{{ $class->name }}</span>
+                                    <span class="text-sm text-gray-500">Section: {{ $class->section ?? 'N/A' }}</span>
+                                </div>
+
+                                <div class="flex space-x-2">
+                                    <a href="{{ route('classes.show', $class->id) }}" 
+                                    class="inline-flex items-center px-3 py-1 bg-blue-500 text-white text-sm font-medium rounded hover:bg-blue-600">
+                                        Open
+                                    </a>
+
+                                    <a href="{{ route('classes.edit', $class->id) }}" 
+                                    class="inline-flex items-center px-3 py-1 bg-yellow-500 text-white text-sm font-medium rounded hover:bg-yellow-600">
+                                        Edit
+                                    </a>
+
+                                    <form action="{{ route('classes.destroy', $class->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this class?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                            class="inline-flex items-center px-3 py-1 bg-red-500 text-white text-sm font-medium rounded hover:bg-red-600">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
                             </li>
                         @endforeach
                     </ul>
+
                 @endif
 
             </div>
