@@ -57,7 +57,7 @@ class ClassController extends Controller
     public function edit(ClassModel $class)
     {
         
-        return view('classes.edit', compact('class'));
+        return view('classes.editclass', compact('class'));
     }
 
     // Update existing class

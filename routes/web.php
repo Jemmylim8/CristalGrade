@@ -10,6 +10,8 @@ use App\Http\Controllers\FacultyDashboardController;
 use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ScoreController;
+use App\Http\Controllers\AnnouncementController;
+
 
 Route::get('/', fn() => view('welcome'));
 
@@ -46,6 +48,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/classes/join', [ClassController::class, 'joinClass'])->name('classes.join');
     Route::get('/faculty/year/{year_level}', [ClassController::class, 'yearLevel'])->name('faculty.yearLevel');
     Route::delete('/classes/{class}/students/{student}', [ClassController::class, 'removeStudent'])->name('classes.students.remove');
+    Route::get('/classes/{class}/editclass', [ClassController::class, 'edit'])->name('classes.edit');
+    Route::put('/classes/{class}', [ClassController::class, 'update'])->name('classes.update');
+    
 });
 
 // Student Class View
@@ -76,6 +81,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+//Bulletin Board
+// Bulletin Board (Announcements)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::get('/announcements/create', [AnnouncementController::class, 'create'])->name('announcements.create');
+    Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+    Route::get('/announcements/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('announcements.edit');
+    Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
+    Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
 });
 
 require __DIR__.'/auth.php';

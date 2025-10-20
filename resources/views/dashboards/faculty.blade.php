@@ -6,10 +6,10 @@
 @endif
     <div x-data="{ openModal: false }" x-cloak 
          class="min-h-screen p-8 flex justify-center">
-
+    @include('announcements._sidebar')
         <!-- Main White Container -->
         <div >
-
+        
             <!-- Year Level Boxes Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 @for ($year = 1; $year <= 4; $year++)
