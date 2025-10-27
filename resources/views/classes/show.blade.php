@@ -2,17 +2,17 @@
 <div class="container mx-auto p-6">
 
     <div class="flex justify-between items-center mb-4">
-        <a href="{{ route('dashboard.faculty') }}"
-           class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
-           Back
-        </a>
-        <h1 class="text-2xl font-bold uppercase">{{ $class->name }} – {{ $class->subject }}</h1>
-        <h2 class="uppercase">Join Code: {{ $class->join_code }}<br>{{ $class->schedule }}</h2>
+         <a href="{{ route('dashboard') }}"
+               class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+               Back
+            </a>
+        <h1 class="text-2xl font-bold uppercase">{{ $class->name }} – {{$class->subject}}</h1>
+        <h2 class="uppercase">Join Code: {{$class->join_code}}<br>{{$class->schedule}}</h2>
 
         @if(auth()->user()->role === 'faculty')
             <a href="{{ route('activities.create', $class->id) }}"
                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
-                + Add Activity
+                Add Activity
             </a>
         @endif
     </div>
