@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ClassModel extends Model
 {
-    use HasFactory; // ✅ Only needed for factory support
+    use HasFactory; //  Only needed for factory support
     protected $table = 'classes';
     protected $fillable = [
         'name',
@@ -27,6 +27,11 @@ class ClassModel extends Model
     {
         return $this->belongsToMany(User::class, 'class_student', 'class_id', 'student_id');
     }
+
     
+    public function activities()
+    {
+        return $this->hasMany(Activity::class, 'class_id');
+    }
 
 }

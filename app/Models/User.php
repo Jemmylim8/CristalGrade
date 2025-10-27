@@ -40,6 +40,7 @@ public function resetTwoFactorCode()
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -70,4 +71,16 @@ public function resetTwoFactorCode()
     {
         return $this->belongsToMany(ClassModel::class, 'class_student', 'student_id', 'class_id');
     }
-}
+    public function activities()
+    {
+        return $this->belongsToMany(Activity::class, 'activity_student', 'student_id', 'activity_id')
+                    ->withPivot('score')
+                    ->withTimestamps();
+    }
+   public function scores()
+    {
+        return $this->hasMany(Score::class, 'user_id');
+    }
+
+ }
+
