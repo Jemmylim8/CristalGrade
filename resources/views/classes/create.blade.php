@@ -29,7 +29,7 @@
 
             {{-- Class Name --}}
             <div class="mb-4">
-                <label class="block font-medium text-gray-700 mb-2">Class Name</label>
+                <label class="block font-medium text-gray-700 mb-2">Course Description</label>
                 <input type="text" name="name" value="{{ old('name') }}" 
                     class="w-full border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-200" required
                     placeholder="e.g. KEYBOARDING"
@@ -38,7 +38,7 @@
 
             {{-- Subject --}}
             <div class="mb-4">
-                <label class="block font-medium text-gray-700 mb-2">Subject</label>
+                <label class="block font-medium text-gray-700 mb-2">Course Code</label>
                 <input type="text" name="subject" value="{{ old('subject') }}" 
                     class="w-full border-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-200" require
                     placeholder="e.g. ITE 359">
