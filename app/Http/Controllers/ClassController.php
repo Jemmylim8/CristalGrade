@@ -177,4 +177,10 @@ class ClassController extends Controller
         $class->students()->detach($student->id);
         return redirect()->back()->with('success', $student->name . ' has been removed from the class.');
     }
+        public function leaveStudent(ClassModel $class, User $student)
+    {
+        $class->students()->detach($student->id);
+        return redirect()->back()->with('left_success','You have left from the class '.$class->name.'.');
+    }
+    
 }

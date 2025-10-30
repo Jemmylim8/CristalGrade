@@ -15,6 +15,8 @@ class Activity extends Model
     'type',          // if you have a type column (Quiz, Exam, etc)
     'total_score',   // instead of max_score
     'due_date',
+    'code',
+    'is_locked',
     ];
 
 

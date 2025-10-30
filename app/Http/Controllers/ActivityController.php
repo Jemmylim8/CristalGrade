@@ -36,7 +36,10 @@ class ActivityController extends Controller
             'total_score' => 'required|integer|min:1',
             'due_date' => 'nullable|date',
         ]);
+        $data['code'] = random_int(1000, 9999);
 
+    // Default lock status (locked = cannot use code on student side yet)
+        $data['is_locked'] = true;
         $class->activities()->create($data);
 
         return redirect()->route('classes.show', $class->id)
@@ -96,6 +99,23 @@ public function showScores(ClassModel $class)
     }
 
     return view('classes.show', compact('class', 'activities', 'students'));
+}
+
+public function toggleLock($id)
+{
+    if (auth()->user()->role !== 'faculty') {
+        abort(403, 'Unauthorized action.');
+    }
+    $activity = \App\Models\Activity::findOrFail($id);
+
+    $activity->is_locked = !$activity->is_locked;
+    $activity->save();
+
+    return response()->json([
+        'success' => true,
+        'is_locked' => $activity->is_locked,
+        'message' => $activity->is_locked ? 'Activity locked' : 'Activity unlocked'
+    ]);
 }
 
 

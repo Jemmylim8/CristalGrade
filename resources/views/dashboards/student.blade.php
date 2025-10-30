@@ -1,4 +1,9 @@
 <x-app-layout>
+    @if (session('left_success'))
+    <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow">
+        {{ session('left_success') }}
+    </div>
+@endif
     <div x-data="{ openModal: false, showSidebar: true }" class="min-h-screen p-8 flex gap-8 relative">
 
         {{-- Toggle Button for Announcements Sidebar --}}
@@ -41,69 +46,77 @@
                 </div>
             @else
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-    @foreach ($classes as $class)
-        @php
-            $pastels = ['#FFE5EC', '#E5F4FF', '#FFF6CC', '#E8FFD5', '#F3E8FF'];
-            $footerBg = $pastels[array_rand($pastels)];
-        @endphp
+@foreach ($classes as $class)
+    @php
+        $pastels = ['#FFE5EC', '#E5F4FF', '#FFF6CC', '#E8FFD5', '#F3E8FF'];
+        $footerBg = $pastels[array_rand($pastels)];
+    @endphp
 
-                <div class="relative bg-[#CCE4FF] rounded-2xl shadow-lg hover:shadow-xl transition overflow-hidden">
-                    
-                    <!-- Top Right Dropdown Menu (Delete Only) -->
-                    <div x-data="{ open: false }" class="absolute top-3 right-3">
-                        <!-- Dots Icon -->
-                        <button 
-                            @click="open = !open"
-                            class="text-gray-600 hover:text-gray-800 transition rounded-full p-1 hover:bg-gray-100">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                width="22" height="22" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round"
-                                class="icon icon-tabler icon-tabler-dots-vertical">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                                <path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                                <path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                            </svg>
-                        </button>
+    <div class="relative">
+        <!-- Dropdown Menu (Moved OUTSIDE anchor) -->
+        <div x-data="{ open: false }" class="absolute top-3 right-3 z-50">
+            <!-- Dots Icon -->
+            <button 
+                type="button"
+                @click.stop="open = !open"
+                class="text-gray-600 hover:text-gray-800 transition rounded-full p-1 hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    width="22" height="22" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icon-tabler-dots-vertical">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                    <path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                    <path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                </svg>
+            </button>
 
-                        <!-- Dropdown Menu -->
-                        <div 
-                            x-show="open"
-                            @click.away="open = false"
-                            x-transition
-                            class="absolute right-0 mt-2 w-28 bg-white border border-gray-200 rounded-lg shadow-md z-50">
-                            <form action="" method="POST"
-                                onsubmit="return confirm('Are you sure you want to delete this class?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    class="block w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md">
-                                    Delete
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Card Content -->
-                    <div class="p-6 mb-2">
-                        <div class="text-xl font-extrabold text-[#3345AE] mb-2 uppercase">
-                            {{ $class->name }}
-                        </div>
-                        <div class="text-gray-700 font-medium uppercase">
-                            {{ $class->subject }}
-                        </div>
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="px-3 py-3 text-sm font-bold text-gray-700" style="background-color: {{ $footerBg }};">
-                        <div>{{ $class->section ?? 'N/A' }}</div>
-                        <div>{{ $class->schedule ?? 'TBA' }}</div>
-                        <div>{{ $class->faculty?->name ?? '—' }}</div>
-                    </div>
-                </div>
-            @endforeach
+            <!-- Dropdown -->
+            <div 
+                x-show="open"
+                @click.away="open = false"
+                x-transition
+                class="absolute right-0 mt-2 w-28 bg-white border border-gray-200 rounded-lg shadow-md">
+                <form id="leaveClassForm{{ $class->id }}" 
+                      action="{{ url('/classes/' . $class->id . '/students/' . auth()->id()) }}" 
+                      method="POST"
+                      onsubmit="return confirm('Are you sure you want to leave this class?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                        class="block w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md">
+                        Leave Class
+                    </button>
+                </form>
+            </div>
         </div>
+
+        <!-- Clickable Card -->
+        <a href="{{ route('classes.show', $class->id) }}" 
+           class="block bg-[#CCE4FF] rounded-2xl shadow-lg hover:shadow-xl transition overflow-hidden">
+
+            <!-- Card Content -->
+            <div class="p-6 mb-2">
+                <div class="text-xl font-extrabold text-[#3345AE] mb-2 uppercase">
+                    {{ $class->name }}
+                </div>
+                <div class="text-gray-700 font-medium uppercase">
+                    {{ $class->subject }}
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-3 py-3 text-sm font-bold text-gray-700" style="background-color: {{ $footerBg }};">
+                <div>{{ $class->section ?? 'N/A' }}</div>
+                <div>{{ $class->schedule ?? 'TBA' }}</div>
+                <div>{{ $class->faculty?->name ?? '—' }}</div>
+            </div>
+        </a>
+    </div>
+@endforeach
+</div>
+
             @endif  
 
             {{-- Floating Join Button --}}

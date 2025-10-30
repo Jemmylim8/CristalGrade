@@ -48,6 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/classes/join', [ClassController::class, 'joinClass'])->name('classes.join');
     Route::get('/faculty/year/{year_level}', [ClassController::class, 'yearLevel'])->name('faculty.yearLevel');
     Route::delete('/classes/{class}/students/{student}', [ClassController::class, 'removeStudent'])->name('classes.students.remove');
+    Route::delete('/classes/{class}/students/{student}', [ClassController::class, 'leaveStudent'])->name('classes.students.leave');
     Route::get('/classes/{class}/editclass', [ClassController::class, 'edit'])->name('classes.edit');
     Route::put('/classes/{class}', [ClassController::class, 'update'])->name('classes.update');
     
@@ -67,6 +68,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/classes/{class}/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
     Route::delete('/classes/{class}/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
     Route::get('/classes/{class}/scores', [ActivityController::class, 'showScores'])->name('activities.scores');
+    Route::post('/activities/{activity}/toggle-lock', [App\Http\Controllers\ActivityController::class, 'toggleLock'])
+    ->name('activities.toggle-lock');
+
 });
 
 // Scores (optional)
