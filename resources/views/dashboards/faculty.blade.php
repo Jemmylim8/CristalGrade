@@ -59,7 +59,8 @@
                         <h2 class="text-xl text-center text-[#F1F1F1] font-bold mb-3 drop-shadow">
                             YEAR {{ $year }} 
                         </h2>
-                        <p class="text-center font-bold text-[#F1F1F1] mb-2">COURSES</p>
+                        <p class ="text-center font-bold text-[#F1F1F1] mb-2" >COURSES</p>
+                        
 
                         <!-- Subject Pills -->
                         <div class="flex flex-wrap gap-2">

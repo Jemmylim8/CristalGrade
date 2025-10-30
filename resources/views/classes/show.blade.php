@@ -2,7 +2,7 @@
 <div class="container mx-auto p-6">
 
     <div class="flex justify-between items-center mb-4">
-         <a href="{{ route('dashboard.student') }}"
+         <a href="{{ route('dashboard') }}"
                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
                Back
             </a>
@@ -46,7 +46,7 @@
                                                 Edit
                                             </a>
 
-                                            {{-- DELETE BUTTON triggers JS form submission --}}
+                                            {{-- DELETE BUTTON --}}
                                             <button type="button"
                                                     onclick="deleteActivity({{ $class->id }}, {{ $activity->id }})"
                                                     class="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded">
@@ -65,6 +65,13 @@
                             <tr>
                                 <td class="border px-4 py-2 font-semibold">
                                     {{ $student->name ?? $student->full_name ?? 'Student' }}
+                                    <button 
+                                        type="button"
+                                        class="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded ml-2"
+                                        onclick="removeStudent({{ $class->id }}, {{ $student->id }})"
+                                    >
+                                        Remove
+                                    </button>
                                 </td>
 
                                 @foreach($activities as $activity)
@@ -94,19 +101,31 @@
             </div>
         </form>
 
-        {{-- HIDDEN DELETE FORM (outside main form) --}}
+        {{-- Hidden Forms --}}
         <form id="deleteActivityForm" method="POST" style="display:none;">
             @csrf
             @method('DELETE')
         </form>
+        <form id="removeStudentForm" method="POST" style="display:none;">
+            @csrf
+            @method('DELETE')
+        </form>
 
-        {{-- SCRIPT --}}
+        {{-- JS SCRIPTS --}}
         <script>
             function deleteActivity(classId, activityId) {
                 if (!confirm('Are you sure you want to delete this activity?')) return;
 
                 const form = document.getElementById('deleteActivityForm');
                 form.action = `/classes/${classId}/activities/${activityId}`;
+                form.submit();
+            }
+
+            function removeStudent(classId, studentId) {
+                if (!confirm('Are you sure you want to remove this student from the class?')) return;
+
+                const form = document.getElementById('removeStudentForm');
+                form.action = `/classes/${classId}/students/${studentId}`;
                 form.submit();
             }
         </script>
