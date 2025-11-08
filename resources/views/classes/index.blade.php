@@ -1,7 +1,7 @@
 <x-app-layout>
 <div class="max-w-5xl mx-auto p-6">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">📚 Classes</h1>
+        <h1 class="text-2xl font-bold text-gray-800">Classes</h1>
         <div>
             <a href="{{ route('dashboard') }}" 
                class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mr-2">
@@ -10,20 +10,20 @@
             @if(auth()->user()->role === 'faculty' || auth()->user()->role === 'admin')
             <a href="{{ route('classes.create') }}" 
                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                ➕ Create Class
+                Create Class
             </a>
             @endif
         </div>
     </div>
 
-    {{-- ✅ Show success message --}}
+    {{-- Show success message --}}
     @if(session('success'))
         <div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-4">
-            ✅ {{ session('success') }}
+         {{ session('success') }}
         </div>
     @endif
 
-    {{-- ✅ Class list table --}}
+    {{-- Class list table --}}
     <div class="bg-white shadow rounded-lg overflow-hidden">
         <table class="min-w-full table-auto border-collapse">
             <thead>

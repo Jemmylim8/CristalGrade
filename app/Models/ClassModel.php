@@ -12,6 +12,7 @@ class ClassModel extends Model
     protected $fillable = [
         'name',
         'subject',
+        'schedule',
         'section',
         'faculty_id',
         'join_code',
