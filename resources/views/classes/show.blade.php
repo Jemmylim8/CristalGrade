@@ -33,6 +33,17 @@
                 <span class="text-blue-100 font-semibold uppercase tracking-wide">Join Code:</span>
                 <span class="font-bold text-yellow-300 ml-1">{{ $class->join_code }}</span>
             </div>
+            <br>
+
+            <div>
+            @if(auth()->user()->role === 'faculty')
+                <a href="{{ route('attendance.index', $class->id) }}" class="...">View Attendance</a>
+            @endif
+            @if(auth()->user()->role === 'student')
+                <a href="{{ route('attendance.student', $class->id) }}" class="...">My Attendance</a>
+            @endif
+            </div>
+            
         </div>
 
         {{-- Add Activity (Faculty Only) --}}
@@ -182,6 +193,15 @@
                     <span class="font-semibold">Save Scores</span>
                 </button>
             </div>
+            <a href="{{ route('pdf.scores', $class->id) }}"
+   class="bg-red-500 px-4 py-2 rounded text-white">
+   Export Scores PDF
+</a>
+
+<a href="{{ route('pdf.attendance', $class->id) }}"
+   class="bg-purple-500 px-4 py-2 rounded text-white">
+   Export Attendance PDF
+</a>
         </form>
 
         <form id="deleteActivityForm" method="POST" style="display:none;">@csrf @method('DELETE')</form>
@@ -194,6 +214,7 @@
 {{-- STUDENT VIEW (SINGLE CODE INPUT) --}}
 {{-- ============================ --}}
 @if(auth()->user()->role === 'student')
+
 <div class="bg-white shadow-xl rounded-2xl p-6 border border-gray-100">
     <h2 class="text-2xl font-bold text-blue-700 mb-4">Your Grades</h2>
 

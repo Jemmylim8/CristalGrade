@@ -11,7 +11,8 @@ use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\AnnouncementController;
-
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\PdfController;
 
 Route::get('/', fn() => view('welcome'));
 
@@ -96,7 +97,24 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
     Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
 });
+Route::middleware(['auth'])->group(function () {
+    // Faculty: attendance per class
+    Route::get('/classes/{class}/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+    Route::post('/classes/{class}/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+    Route::get('/classes/{class}/attendance/{attendance}', [AttendanceController::class, 'show'])->name('attendance.show');
+    Route::put('/attendance/{attendance}', [AttendanceController::class, 'update'])->name('attendance.update');
+    Route::get('/classes/{class}/attendance/pdf', [AttendanceController::class, 'exportPdf'])->name('attendance.exportPdf');
 
+    // Student: view their attendance per class
+    Route::get('/student/classes/{class}/attendance', [AttendanceController::class, 'studentView'])->name('attendance.student');
+});
+// EXPORT PDF FOR SCORES
+Route::get('/faculty/class/{class}/scores/pdf', [PdfController::class, 'exportScores'])
+    ->name('pdf.scores');
+
+// EXPORT PDF FOR ATTENDANCE
+Route::get('/faculty/class/{class}/attendance/pdf', [PdfController::class, 'exportAttendance'])
+    ->name('pdf.attendance');
 require __DIR__.'/auth.php';
 
 // use App\Http\Controllers\ProfileController;
