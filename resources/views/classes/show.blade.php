@@ -18,7 +18,7 @@
                 <span class="font-semibold text-blue-200">– {{ $class->subject }}</span>
             </h1>
 
-            {{-- Schedule (middle) --}}
+            {{-- Schedule --}}
             <div class="mt-2 text-blue-100 font-medium tracking-wide flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline-block mr-1 opacity-90"
                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -28,15 +28,14 @@
                 {{ $class->schedule }}
             </div>
 
-            {{-- Join Code (below) --}}
+            {{-- Join Code --}}
             <div class="mt-3 bg-white/15 backdrop-blur-md inline-block px-4 py-1.5 rounded-full shadow-sm border border-white/10">
                 <span class="text-blue-100 font-semibold uppercase tracking-wide">Join Code:</span>
                 <span class="font-bold text-yellow-300 ml-1">{{ $class->join_code }}</span>
             </div>
         </div>
 
-
-        {{-- Add Activity Button --}}
+        {{-- Add Activity (Faculty Only) --}}
         @if(auth()->user()->role === 'faculty')
             <a href="{{ route('activities.create', $class->id) }}"
                class="bg-yellow-500 hover:bg-yellow-600 text-white w-16 h-16 flex items-center justify-center rounded-2xl shadow-2xl transition-transform hover:scale-110">
@@ -49,20 +48,21 @@
         @endif
     </div>
 
-    {{-- SUCCESS MESSAGE --}}
+    {{-- SUCCESS --}}
     @if(session('success'))
         <div class="p-3 bg-green-100 text-green-800 rounded-md shadow">
             {{ session('success') }}
         </div>
     @endif
 
-    {{-- FACULTY TABLE --}}
+    {{-- ============================= --}}
+    {{-- FACULTY VIEW (EDITABLE TABLE) --}}
+    {{-- ============================= --}}
     @if(auth()->user()->role === 'faculty')
     <div class="bg-white shadow-xl rounded-2xl p-4 border border-gray-100">
         <form id="saveScoresForm" method="POST" action="{{ route('scores.update', $class->id) }}">
             @csrf
 
-            {{-- Scrollable Table --}}
             <div class="overflow-x-auto">
                 <div class="max-h-[600px] overflow-y-auto relative rounded-lg custom-scrollbar">
                     <table class="table-auto border-collapse border w-full">
@@ -75,26 +75,22 @@
                                         <div class="font-semibold text-gray-800">{{ $activity->name }}</div>
                                         <strong class="text-blue-600 font-mono">{{ $activity->code ?? '----' }}</strong>
 
-                                        {{-- Dropdown Button --}}
+                                        {{-- Dropdown --}}
                                         <div x-data="{ open: false }" class="absolute top-1 right-1 inline-block">
                                             <button 
                                                 type="button"
                                                 @click="open = !open"
                                                 class="text-blue-500 hover:text-blue-700 transition rounded-full p-1 hover:bg-blue-100 focus:outline-none">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                                    width="20" height="20" viewBox="0 0 24 24"
-                                                    fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="icon icon-tabler icon-tabler-dots-vertical">
-                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                    <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                                                    <path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                                                    <path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                                                    width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                                    <circle cx="12" cy="5" r="2"/>
+                                                    <circle cx="12" cy="12" r="2"/>
+                                                    <circle cx="12" cy="19" r="2"/>
                                                 </svg>
                                             </button>
 
-                                            {{-- Dropdown Menu --}}
-                                            <div x-show="open" @click.outside="open = false" x-cloak
+
+                                            <div x-show="open" @click.outside="open=false" x-cloak
                                                  class="absolute right-0 mt-2 w-24 bg-white border border-gray-200 rounded-md shadow-lg z-50 text-center">
                                                 <a href="{{ route('activities.edit', [$class->id, $activity->id]) }}"
                                                    class="block w-full text-center px-3 py-2 text-sm text-blue-600 hover:bg-blue-100">
@@ -108,19 +104,13 @@
                                             </div>
                                         </div>
 
-                                        {{-- Lock Toggle --}}
+                                        {{-- Lock --}}
                                         <button 
                                             type="button"
-                                            class="lock-btn px-3 py-1 rounded text-white flex items-center justify-center
-                                                {{ $activity->is_locked ? 'bg-red-500 hover:bg-green-600' : 'bg-red-500 hover:bg-green-600' }}"
+                                            class="lock-btn px-3 py-1 rounded text-white {{ $activity->is_locked ? 'bg-red-500' : 'bg-green-500' }}"
                                             data-id="{{ $activity->id }}"
-                                            data-locked="{{ $activity->is_locked ? 1 : 0 }}"
-                                            title="{{ $activity->is_locked ? 'Locked' : 'Unlocked' }}">
-                                            @if($activity->is_locked)
-                                                Locked
-                                            @else
-                                                Unlocked
-                                            @endif
+                                            data-locked="{{ $activity->is_locked ? 1 : 0 }}">
+                                            {{ $activity->is_locked ? 'Locked' : 'Unlocked' }}
                                         </button>
 
                                         <small class="text-gray-600">(Max: {{ $activity->total_score }})</small>
@@ -130,50 +120,44 @@
                             </tr>
                         </thead>
 
-                        {{-- Students --}}
                         <tbody class="bg-white">
                             @foreach($students as $student)
                             @php $sid = $student->id; @endphp
                             <tr class="hover:bg-gray-50 transition group">
                                 <td class="border px-4 py-2 font-semibold flex justify-between items-center relative">
                                     <span>{{ $student->name ?? $student->full_name ?? 'Student' }}</span>
-
-                                    {{-- Dropdown Button --}}
+                                    {{-- Student row dropdown --}}
                                     <div x-data="{ open: false }" class="relative inline-block">
                                         <button
                                             type="button"
                                             @click="open = !open"
-                                            class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-gray-600 hover:text-blue-600 rounded-full p-1 hover:bg-blue-100 focus:outline-none">
+                                            class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-gray-500 hover:text-blue-600 rounded-full p-1 hover:bg-gray-100 focus:outline-none">
                                             <svg xmlns="http://www.w3.org/2000/svg"
-                                                width="20" height="20" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="icon icon-tabler icon-tabler-dots-vertical">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                                                <path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                                                <path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                                                width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="12" cy="5" r="2"/>
+                                                <circle cx="12" cy="12" r="2"/>
+                                                <circle cx="12" cy="19" r="2"/>
                                             </svg>
                                         </button>
 
-                                        {{-- Dropdown Menu --}}
-                                        <div x-show="open" @click.outside="open = false" x-cloak
-                                             class="absolute right-0 mt-2 w-28 bg-white border border-gray-200 rounded-md shadow-lg z-50 text-center">
+
+
+                                        <div x-show="open" @click.outside="open=false" x-cloak
+                                            class="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-lg shadow-xl text-center z-50">
                                             <button type="button"
                                                     onclick="removeStudent({{ $class->id }}, {{ $student->id }})"
-                                                    class="block w-full px-3 py-2 text-sm text-red-600 hover:bg-red-100">
+                                                    class="flex items-center justify-center gap-2 w-full px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors rounded-md">
                                                 Remove
                                             </button>
                                         </div>
-                                    </div>
-                                </td>
+
 
                                 @foreach($activities as $activity)
                                 @php $scoreValue = $scores[$sid][$activity->id] ?? ''; @endphp
                                 <td class="border px-4 py-2 text-center">
                                     <input type="number"
                                            name="scores[{{ $sid }}][{{ $activity->id }}]"
-                                           value="{{ old('scores.' . $sid . '.' . $activity->id, $scoreValue) }}"
+                                           value="{{ $scoreValue }}"
                                            min="0"
                                            max="{{ $activity->total_score }}"
                                            class="w-20 border rounded p-1 text-center" />
@@ -193,35 +177,152 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                          stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                              d="M9 12.75 11.25 15 15 9.75M21 12A9 9 0 113 12a9 9 0 0118 0Z"/>
                     </svg>
                     <span class="font-semibold">Save Scores</span>
                 </button>
             </div>
         </form>
 
-        {{-- Hidden forms --}}
         <form id="deleteActivityForm" method="POST" style="display:none;">@csrf @method('DELETE')</form>
         <form id="removeStudentForm" method="POST" style="display:none;">@csrf @method('DELETE')</form>
     </div>
     @endif
+
+   {{-- ============================ --}}
+{{-- STUDENT VIEW (EDITABLE WITH CODE UNLOCK) --}}
+{{-- ============================ --}}
+@if(auth()->user()->role === 'student')
+<div class="bg-white shadow-xl rounded-2xl p-6 border border-gray-100">
+    <h2 class="text-2xl font-bold text-blue-700 mb-4">Your Grades</h2>
+
+    <div class="overflow-x-auto">
+        <table class="table-auto border-collapse border w-full">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="border px-4 py-2 text-left font-semibold">Activity</th>
+                    <th class="border px-4 py-2 text-center font-semibold">Score</th>
+                    <th class="border px-4 py-2 text-center font-semibold">Total</th>
+                    <th class="border px-4 py-2 text-center font-semibold">Unlock / Lock</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @php $sid = auth()->id(); @endphp
+                @foreach($activities as $activity)
+                @php $scoreValue = $scores[$sid][$activity->id] ?? null; @endphp
+
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="border px-4 py-2 font-semibold">{{ $activity->name }}
+                        <span class="text-sm text-gray-500">({{ $activity->due_date ?? '—' }})</span>
+                    </td>
+                    
+
+                    <td class="border px-4 py-2 text-center font-bold text-blue-600">
+                        <input type="number"
+                               name="scores[{{ $sid }}][{{ $activity->id }}]"
+                               value="{{ $scoreValue ?? '' }}"
+                               min="0"
+                               max="{{ $activity->total_score }}"
+                               class="score-input w-20 border rounded p-1 text-center bg-gray-100 cursor-not-allowed"
+                               readonly
+                               data-activity-code="{{ $activity->code }}"
+                        />
+                    </td>
+
+                    <td class="border px-4 py-2 text-center">{{ $activity->total_score }}</td>
+
+                    <td class="border px-4 py-2 text-center">
+                        <div class="flex items-center justify-center space-x-2">
+                            <input type="text"
+                                   placeholder="Enter code"
+                                   class="unlock-code w-24 border rounded p-1 text-center"
+                                   data-activity-code="{{ $activity->code }}"
+                            />
+                            <button type="button"
+                                    class="toggle-unlock-btn px-3 py-1 bg-blue-500 text-white rounded"
+                                    data-activity-id="{{ $activity->id }}">
+                                Unlock
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{{-- JS for inline toggle unlock/lock --}}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".toggle-unlock-btn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+            const row = btn.closest("tr");
+            const input = row.querySelector(".score-input");
+            const codeInput = row.querySelector(".unlock-code");
+            const enteredCode = codeInput.value.trim();
+            const correctCode = input.dataset.activityCode;
+
+            if (input.readOnly) {
+                // Unlock attempt
+                if (enteredCode === correctCode) {
+                    input.readOnly = false;
+                    input.classList.remove("bg-gray-100", "cursor-not-allowed");
+                    input.classList.add("bg-white", "border-blue-400");
+                    btn.textContent = "Lock";
+                    btn.classList.remove("bg-blue-500");
+                    btn.classList.add("bg-red-500");
+                } else {
+                    alert("Incorrect code. Try again.");
+                }
+            } else {
+                // Lock input
+                input.readOnly = true;
+                input.classList.remove("bg-white", "border-blue-400");
+                input.classList.add("bg-gray-100", "cursor-not-allowed");
+                btn.textContent = "Unlock";
+                btn.classList.remove("bg-red-500");
+                btn.classList.add("bg-blue-500");
+
+                // Auto-save score when locking
+                const formData = new FormData();
+                formData.append(input.name, input.value);
+                try {
+                    await fetch("{{ route('scores.update', $class->id) }}", {
+                        method: "POST",
+                        headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" },
+                        body: formData
+                    });
+                } catch(e) {
+                    console.error("Failed to save score:", e);
+                }
+            }
+
+            codeInput.value = "";
+        });
+    });
+});
+</script>
+
+@endif
+
+
 </div>
 </x-app-layout>
 
-{{-- Scrollbar Styles --}}
-{{-- Scrollbar Styles --}}
+{{-- Scrollbar --}}
 <style>
 .custom-scrollbar::-webkit-scrollbar { width: 10px; height: 10px; }
-.custom-scrollbar::-webkit-scrollbar-button { display: none; }
 .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #3b82f6, #2563eb); border-radius: 8px; }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #2563eb, #1d4ed8); }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#3b82f6,#2563eb); border-radius: 8px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg,#2563eb,#1d4ed8); }
 </style>
 
-
-{{-- Scripts --}}
+{{-- JS --}}
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+    // Faculty lock buttons
     const buttons = document.querySelectorAll(".lock-btn");
     buttons.forEach(btn => {
         const id = btn.dataset.id;
@@ -229,34 +330,55 @@ document.addEventListener("DOMContentLoaded", () => {
         updateLockState(btn, inputs, btn.dataset.locked === "1");
 
         btn.addEventListener("click", async () => {
-            try {
-                const res = await fetch(`/activities/${id}/toggle-lock`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                    },
-                });
-                const data = await res.json();
-                updateLockState(btn, inputs, data.is_locked);
-            } catch (err) {
-                console.error("Error toggling lock:", err);
-            }
+            const res = await fetch(`/activities/${id}/toggle-lock`, {
+                method: "POST",
+                headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" }
+            });
+
+            const data = await res.json();
+            updateLockState(btn, inputs, data.is_locked);
         });
     });
 
     function updateLockState(btn, inputs, locked) {
         btn.dataset.locked = locked ? "1" : "0";
-        if (locked) {
-            btn.classList.replace("bg-green-500", "bg-red-500");
-            btn.innerHTML = "Locked";
-            inputs.forEach(i => { i.disabled = true; i.classList.add("bg-gray-100", "cursor-not-allowed"); });
-        } else {
-            btn.classList.replace("bg-red-500", "bg-green-500");
-            btn.innerHTML = "Unlocked";
-            inputs.forEach(i => { i.disabled = false; i.classList.remove("bg-gray-100", "cursor-not-allowed"); });
-        }
+        btn.classList.toggle("bg-red-500", locked);
+        btn.classList.toggle("bg-green-500", !locked);
+        btn.textContent = locked ? "Locked" : "Unlocked";
+
+        inputs.forEach(i => {
+            i.disabled = locked;
+            i.classList.toggle("bg-gray-100", locked);
+            i.classList.toggle("cursor-not-allowed", locked);
+        });
     }
+
+    // Student unlock feature
+    document.querySelectorAll(".unlock-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const row = btn.closest("tr");
+            const input = row.querySelector(".score-input");
+            const codeInput = row.querySelector(".unlock-code");
+            const enteredCode = codeInput.value.trim();
+            const correctCode = input.dataset.activityCode;
+
+            if (!correctCode) {
+                alert("This activity cannot be unlocked.");
+                return;
+            }
+
+            if (enteredCode === correctCode) {
+                input.readOnly = false;
+                input.classList.remove("bg-gray-100", "cursor-not-allowed");
+                input.classList.add("bg-white", "border-blue-400");
+                alert("Activity unlocked! You can now edit your score.");
+            } else {
+                alert("Incorrect code. Try again.");
+            }
+
+            codeInput.value = "";
+        });
+    });
 });
 
 function deleteActivity(cid, aid) {
