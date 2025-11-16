@@ -190,122 +190,105 @@
     @endif
 
    {{-- ============================ --}}
-{{-- STUDENT VIEW (EDITABLE WITH CODE UNLOCK) --}}
+{{-- ============================ --}}
+{{-- STUDENT VIEW (SINGLE CODE INPUT) --}}
 {{-- ============================ --}}
 @if(auth()->user()->role === 'student')
 <div class="bg-white shadow-xl rounded-2xl p-6 border border-gray-100">
     <h2 class="text-2xl font-bold text-blue-700 mb-4">Your Grades</h2>
 
-    <div class="overflow-x-auto">
-        <table class="table-auto border-collapse border w-full">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="border px-4 py-2 text-left font-semibold">Activity</th>
-                    <th class="border px-4 py-2 text-center font-semibold">Score</th>
-                    <th class="border px-4 py-2 text-center font-semibold">Total</th>
-                    <th class="border px-4 py-2 text-center font-semibold">Unlock / Lock</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @php $sid = auth()->id(); @endphp
-                @foreach($activities as $activity)
-                @php $scoreValue = $scores[$sid][$activity->id] ?? null; @endphp
-
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="border px-4 py-2 font-semibold">{{ $activity->name }}
-                        <span class="text-sm text-gray-500">({{ $activity->due_date ?? '—' }})</span>
-                    </td>
-                    
-
-                    <td class="border px-4 py-2 text-center font-bold text-blue-600">
-                        <input type="number"
-                               name="scores[{{ $sid }}][{{ $activity->id }}]"
-                               value="{{ $scoreValue ?? '' }}"
-                               min="0"
-                               max="{{ $activity->total_score }}"
-                               class="score-input w-20 border rounded p-1 text-center bg-gray-100 cursor-not-allowed"
-                               readonly
-                               data-activity-code="{{ $activity->code }}"
-                        />
-                    </td>
-
-                    <td class="border px-4 py-2 text-center">{{ $activity->total_score }}</td>
-
-                    <td class="border px-4 py-2 text-center">
-                        <div class="flex items-center justify-center space-x-2">
-                            <input type="text"
-                                   placeholder="Enter code"
-                                   class="unlock-code w-24 border rounded p-1 text-center"
-                                   data-activity-code="{{ $activity->code }}"
-                            />
-                            <button type="button"
-                                    class="toggle-unlock-btn px-3 py-1 bg-blue-500 text-white rounded"
-                                    data-activity-id="{{ $activity->id }}">
-                                Unlock
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+    {{-- Single Activity Code Input --}}
+    <div class="mb-4 flex items-center space-x-2">
+        <label for="activityCode" class="font-semibold">Enter Activity Code:</label>
+        <input type="password" id="activityCode" class="border rounded p-1 w-32" placeholder="e.g. 0052" maxlength="4">
     </div>
+
+    <form id="studentScoreForm" method="POST" action="{{ route('scores.update', $class->id) }}">
+        @csrf
+        <div class="overflow-x-auto">
+            <table class="table-auto border-collapse border w-full">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="border px-4 py-2 text-left font-semibold">Activity</th>
+                        <th class="border px-4 py-2 text-center font-semibold">Score</th>
+                        <th class="border px-4 py-2 text-center font-semibold">Total</th>
+                        <th class="border px-4 py-2 text-center font-semibold">Due</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @php $myId = auth()->user()->id; @endphp
+                    @foreach($activities as $activity)
+                        @php $myScore = $scores[$myId][$activity->id] ?? ''; @endphp
+                        <tr data-activity-id="{{ $activity->id }}"
+                            data-activity-code="{{ $activity->code }}"
+                            data-locked="{{ $activity->is_locked ? 1 : 0 }}">
+                            <td class="border px-4 py-2 font-semibold">{{ $activity->name }}</td>
+                            <td class="border px-4 py-2 text-center">
+                                <input type="number"
+                                       name="scores[{{ $myId }}][{{ $activity->id }}]"
+                                       value="{{ $myScore }}"
+                                       min="0"
+                                       max="{{ $activity->total_score }}"
+                                       class="score-input w-20 border rounded p-1 text-center bg-gray-100 cursor-not-allowed"
+                                       readonly
+                                       style="display: none;">
+                                <span class="score-display">{{ $myScore ?: '—' }}</span>
+                            </td>
+                            <td class="border px-4 py-2 text-center">{{ $activity->total_score }}</td>
+                            <td class="border px-4 py-2 text-center">{{ $activity->due_date ?? '—' }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-4 text-center">
+            <button type="submit" id="saveBtn" class="bg-blue-600 hover:bg-green-600 text-white px-6 py-2 rounded shadow-md hidden">
+                Save Scores
+            </button>
+        </div>
+    </form>
 </div>
 
-{{-- JS for inline toggle unlock/lock --}}
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".toggle-unlock-btn").forEach(btn => {
-        btn.addEventListener("click", async () => {
-            const row = btn.closest("tr");
+    const codeInput = document.getElementById("activityCode");
+    const rows = document.querySelectorAll("tr[data-activity-id]");
+    const saveBtn = document.getElementById("saveBtn");
+
+    codeInput.addEventListener("input", () => {
+        const enteredCode = codeInput.value.trim();
+        let valid = false;
+
+        rows.forEach(row => {
+            const correctCode = row.dataset.activityCode;
+            const locked = row.dataset.locked === "1";
             const input = row.querySelector(".score-input");
-            const codeInput = row.querySelector(".unlock-code");
-            const enteredCode = codeInput.value.trim();
-            const correctCode = input.dataset.activityCode;
+            const display = row.querySelector(".score-display");
 
-            if (input.readOnly) {
-                // Unlock attempt
-                if (enteredCode === correctCode) {
-                    input.readOnly = false;
-                    input.classList.remove("bg-gray-100", "cursor-not-allowed");
-                    input.classList.add("bg-white", "border-blue-400");
-                    btn.textContent = "Lock";
-                    btn.classList.remove("bg-blue-500");
-                    btn.classList.add("bg-red-500");
-                } else {
-                    alert("Incorrect code. Try again.");
-                }
+            if (!locked && enteredCode === correctCode) {
+                input.style.display = "inline-block";
+                input.readOnly = false;
+                input.classList.remove("bg-gray-100","cursor-not-allowed");
+                input.classList.add("bg-white","border-blue-400");
+                display.style.display = "none";
+                valid = true;
             } else {
-                // Lock input
+                input.style.display = "none";
                 input.readOnly = true;
-                input.classList.remove("bg-white", "border-blue-400");
-                input.classList.add("bg-gray-100", "cursor-not-allowed");
-                btn.textContent = "Unlock";
-                btn.classList.remove("bg-red-500");
-                btn.classList.add("bg-blue-500");
-
-                // Auto-save score when locking
-                const formData = new FormData();
-                formData.append(input.name, input.value);
-                try {
-                    await fetch("{{ route('scores.update', $class->id) }}", {
-                        method: "POST",
-                        headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" },
-                        body: formData
-                    });
-                } catch(e) {
-                    console.error("Failed to save score:", e);
-                }
+                input.classList.add("bg-gray-100","cursor-not-allowed");
+                input.classList.remove("bg-white","border-blue-400");
+                display.style.display = "inline";
             }
-
-            codeInput.value = "";
         });
+
+        saveBtn.style.display = valid ? "inline-block" : "none";
     });
 });
 </script>
-
 @endif
+
 
 
 </div>
