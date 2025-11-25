@@ -28,7 +28,13 @@ class ClassModel extends Model
     {
         return $this->belongsToMany(User::class, 'class_student', 'class_id', 'student_id');
     }
-
+    public function attendanceRecords()
+    {
+        return $this->hasMany(AttendanceRecord::class, 'class_id'); // adjust foreign key if needed
+    }
+     public function attendances() {
+        return $this->hasMany(Attendance::class, 'class_id');
+    }
     
     public function activities()
     {

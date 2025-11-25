@@ -1,10 +1,11 @@
 <x-app-layout>
+    <script src="https://cdn.tailwindcss.com"></script>
     @if (session('success'))
     <div role="alert" class="mb-4 p-4 text-green-800 bg-green-100 border border-green-300 rounded-md">
         {{ session('success') }}
     </div>
     @endif
-
+    <style>[x-cloak]{display:none!important;}</style>
     <div x-data="{ openModal: false, showSidebar: true }" x-cloak 
          class="min-h-screen p-8 flex gap-6 relative">
 
@@ -84,7 +85,7 @@
             </button>
 
             <!-- Year Level Modal -->
-            <div x-show="openModal" x-transition.opacity
+            <div x-show="openModal" x-transition.opacity x-cloak
                 class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                 <div @click.away="openModal = false" class="bg-white rounded-lg shadow-lg p-6 w-80">
                     <h2 class="text-lg font-bold mb-4 text-center">Select Year Level</h2>

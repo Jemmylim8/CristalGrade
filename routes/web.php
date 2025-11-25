@@ -13,7 +13,7 @@ use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\PdfController;
-
+use App\Http\Controllers\ProfilePhotoController;
 Route::get('/', fn() => view('welcome'));
 
 // Two-Factor Auth
@@ -115,6 +115,8 @@ Route::get('/faculty/class/{class}/scores/pdf', [PdfController::class, 'exportSc
 // EXPORT PDF FOR ATTENDANCE
 Route::get('/faculty/class/{class}/attendance/pdf', [PdfController::class, 'exportAttendance'])
     ->name('pdf.attendance');
+Route::post('/profile/photo', [ProfilePhotoController::class, 'update'])->name('profile.photo');
+
 require __DIR__.'/auth.php';
 
 // use App\Http\Controllers\ProfileController;

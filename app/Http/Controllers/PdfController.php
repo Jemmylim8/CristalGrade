@@ -8,10 +8,13 @@ use App\Models\Activity;
 use App\Models\User;
 use PDF;
 
+
+
 class PdfController extends Controller
 {
     public function exportScores($classId)
     {
+        
         $class = ClassModel::findOrFail($classId);
         $students = $class->students;
         $activities = Activity::where('class_id', $classId)->get();
@@ -21,19 +24,25 @@ class PdfController extends Controller
         return $pdf->download($class->name . '_scores.pdf');
     }
 
-    public function exportAttendance($classId)
+      public function exportAttendance($classId)
     {
         $class = ClassModel::findOrFail($classId);
         $students = $class->students;
+        $attendances = $class->attendances()->orderBy('date')->get();
 
-        // group by student + date
-        $attendance = Attendance::where('class_id', $classId)
-            ->orderBy('date', 'asc')
-            ->get()
-            ->groupBy('student_id');
+        $records = [];
+        foreach ($students as $student) {
+        $records[$student->id] = [];
+        foreach ($attendances as $att) {
+            $record = $att->attendanceRecords()->where('student_id', $student->id)->first();
+            $records[$student->id][$att->id] = $record 
+                ? ($record->status . ($record->remarks ? " ({$record->remarks})" : '')) 
+                : 'Absent';
+        }
+    }
 
-        $pdf = PDF::loadView('pdf.attendance', compact('class', 'students', 'attendance'));
 
+        $pdf = PDF::loadView('pdf.attendance', compact('class','students','attendances','records'));
         return $pdf->download($class->name . '_attendance.pdf');
     }
 }

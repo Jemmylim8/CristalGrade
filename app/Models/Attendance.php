@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 class Attendance extends Model
 {
     protected $fillable = ['class_id', 'date', 'created_by'];
-
+    
+    public function attendanceRecords() {
+        return $this->hasMany(AttendanceRecord::class);
+    }
     public function records()
     {
         return $this->hasMany(AttendanceRecord::class);

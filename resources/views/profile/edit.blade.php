@@ -75,6 +75,17 @@
                         </div>
                     </form>
                 </div>
+                <form action="{{ route('profile.photo') }}" method="POST" enctype="multipart/form-data" class="mt-4">
+                    @csrf
+
+                    <label class="block mb-2 font-semibold">Change Profile Photo</label>
+
+                    <input type="file" name="profile_photo" class="block mt-1 border rounded p-2" required>
+
+                    <button class="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                        Upload Photo
+                    </button>
+                </form>
 
                 <!-- ✅ Update Password -->
                 <div>

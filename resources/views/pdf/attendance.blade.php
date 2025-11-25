@@ -1,45 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Attendance - {{ $class->name }}</title>
     <style>
         body { font-family: sans-serif; font-size: 12px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid black; padding: 4px; text-align: center; }
-        th { background: #eee; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 5px; text-align: center; }
+        th { background-color: #f1f1f1; }
     </style>
 </head>
 <body>
+    <h2>Class: {{ $class->name }} – {{ $class->subject }}</h2>
+    <p>Schedule: {{ $class->schedule }}</p>
 
-<h2>{{ $class->name }} – Attendance Report</h2>
-
-<table>
+   <table class="table-auto border w-full">
     <thead>
         <tr>
             <th>Student</th>
-            <th>Date</th>
-            <th>Status</th>
+            @foreach($attendances as $att)
+                <th>{{ $att->date }}</th>
+            @endforeach
         </tr>
     </thead>
     <tbody>
-
         @foreach($students as $student)
-            @if(isset($attendance[$student->id]))
-                @foreach($attendance[$student->id] as $att)
-                <tr>
-                    <td>{{ $student->name }}</td>
-                    <td>{{ $att->date }}</td>
-                    <td>{{ ucfirst($att->status) }}</td>
-                </tr>
+            <tr>
+                <td>{{ $student->name }}</td>
+                @foreach($attendances as $att)
+                    <td>{{ $records[$student->id][$att->id] }}</td>
                 @endforeach
-            @else
-                <tr>
-                    <td>{{ $student->name }}</td>
-                    <td>–</td>
-                    <td>–</td>
-                </tr>
-            @endif
+            </tr>
         @endforeach
-
     </tbody>
 </table>
 

@@ -33,7 +33,14 @@
                                 </span>
                             </div>
                             <div class="flex items-center space-x-1">
-                                <img src="{{ asset('images/profile.png') }}" alt="Profile" class="w-10 h-10 rounded-full">
+                                <img 
+                                    src="{{ Auth::user()->profile_photo 
+                                        ? asset('uploads/profile/' . Auth::user()->profile_photo)
+                                        : asset('images/profile.png') }}"
+                                    class="w-10 h-10 rounded-full object-cover"
+                                    alt="User Avatar"
+                                />
+
                                 <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.939l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.25a.75.75 0 01-1.06 0L5.25 8.27a.75.75 0 01-.02-1.06z" clip-rule="evenodd" />
                                 </svg>

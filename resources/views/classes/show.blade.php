@@ -1,6 +1,6 @@
 <x-app-layout>
 <div class="container mx-auto p-6 space-y-6">
-
+<script src="https://cdn.tailwindcss.com"></script>
     {{-- HEADER --}}
     <div class="flex justify-between items-center mb-6 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-800 text-white p-6 rounded-2xl shadow-xl">
         {{-- Back Button --}}
@@ -84,6 +84,8 @@
                                 <th class="border px-4 py-2 align-top relative">
                                     <div class="flex flex-col items-center space-y-1">
                                         <div class="font-semibold text-gray-800">{{ $activity->name }}</div>
+                                        <div class=" text-gray-600">{{ $activity->type }}</div>
+
                                         <strong class="text-blue-600 font-mono">{{ $activity->code ?? '----' }}</strong>
 
                                         {{-- Dropdown --}}
