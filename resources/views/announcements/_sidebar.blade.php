@@ -21,7 +21,7 @@ $announcementsToShow = $sidebarAnnouncements ?? collect();
     >
         <!-- Header -->
         <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-xl text-gray-800 tracking-tight">Announcements</h3>
+            <h3 class="font-bold text-xl text-gray-800 tracking-tight">CSD BULLETIN BOARD</h3>
             <a href="{{ route('announcements.index') }}" 
                class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">
                 View all

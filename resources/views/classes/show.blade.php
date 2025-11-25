@@ -199,11 +199,6 @@
    class="bg-red-500 px-4 py-2 rounded text-white">
    Export Scores PDF
 </a>
-
-<a href="{{ route('pdf.attendance', $class->id) }}"
-   class="bg-purple-500 px-4 py-2 rounded text-white">
-   Export Attendance PDF
-</a>
         </form>
 
         <form id="deleteActivityForm" method="POST" style="display:none;">@csrf @method('DELETE')</form>
@@ -235,6 +230,7 @@
                         <th class="border px-4 py-2 text-left font-semibold">Activity</th>
                         <th class="border px-4 py-2 text-center font-semibold">Score</th>
                         <th class="border px-4 py-2 text-center font-semibold">Total</th>
+                        <th class="border px-4 py-2 text-center font-semibold">Date</th>
                         <th class="border px-4 py-2 text-center font-semibold">Due</th>
                     </tr>
                 </thead>
@@ -246,7 +242,7 @@
                         <tr data-activity-id="{{ $activity->id }}"
                             data-activity-code="{{ $activity->code }}"
                             data-locked="{{ $activity->is_locked ? 1 : 0 }}">
-                            <td class="border px-4 py-2 font-semibold">{{ $activity->name }}</td>
+                            <td class="border px-4 py-2 font-semibold">{{ $activity->name }}({{$activity->type}})</td>
                             <td class="border px-4 py-2 text-center">
                                 <input type="number"
                                        name="scores[{{ $myId }}][{{ $activity->id }}]"
@@ -259,6 +255,7 @@
                                 <span class="score-display">{{ $myScore ?: '—' }}</span>
                             </td>
                             <td class="border px-4 py-2 text-center">{{ $activity->total_score }}</td>
+                            <td class="border px-4 py-2 text-center">{{ $activity->created_at->toDateString(); }}</td>
                             <td class="border px-4 py-2 text-center">{{ $activity->due_date ?? '—' }}</td>
                         </tr>
                     @endforeach
