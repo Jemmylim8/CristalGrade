@@ -35,7 +35,7 @@
                             <div class="flex items-center space-x-1">
                                 <img 
                                     src="{{ Auth::user()->profile_photo 
-                                        ? asset('uploads/profile/' . Auth::user()->profile_photo)
+                                           ? asset('uploads/profile/' . Auth::user()->profile_photo)
                                         : asset('images/profile.png') }}"
                                     class="w-10 h-10 rounded-full object-cover"
                                     alt="User Avatar"
