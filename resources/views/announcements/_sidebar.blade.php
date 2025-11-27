@@ -94,7 +94,8 @@ $announcementsToShow = $sidebarAnnouncements ?? collect();
             <div class="mt-6 flex justify-center">
                 <button 
                     @click="createAnnouncement = true"
-                    class="flex items-center justify-center w-40 h-12 bg-yellow-500 hover:bg-white text-white hover:text-black rounded-full shadow-md hover:shadow-lg transition duration-200">
+                    class="flex items-center justify-center w-40 h-12 bg-yellow-500 hover:bg-white text-white hover:text-black rounded-full shadow-md hover:shadow-lg transition duration-200"
+                    title="Add Announcement">
                     <span class="text-2xl font-bold leading-none">+</span>
                 </button>
             </div>

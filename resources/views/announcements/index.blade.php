@@ -43,7 +43,8 @@
                                 <div x-data="{ open: false }" class="absolute top-3 right-3">
                                     <button 
                                         @click.stop="open = !open"
-                                        class="text-blue-100 hover:text-white transition rounded-full p-1 hover:bg-blue-500/30">
+                                        class="text-blue-100 hover:text-white transition rounded-full p-1 hover:bg-blue-500/30"
+                                        title="Options">
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                             width="22" height="22" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2"

@@ -12,7 +12,8 @@
         {{-- Toggle Button for Announcements Sidebar --}}
         <button 
             @click="showSidebar = !showSidebar"
-            class="absolute top-6 left-6 bg-[#EDEDED] hover:bg-blue-700 text-black hover:text-white  px-4 py-2 rounded shadow transition z-50 flex items-center gap-2">
+            class="absolute top-6 left-6 bg-[#EDEDED] hover:bg-blue-700 text-black hover:text-white  px-4 py-2 rounded shadow transition z-50 flex items-center gap-2"
+            title="Toggle Announcements Sidebar">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                 <path fill-rule="evenodd" d="M2.625 6.75a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875 0A.75.75 0 0 1 8.25 6h12a.75.75 0 0 1 0 1.5h-12a.75.75 0 0 1-.75-.75ZM2.625 12a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0ZM7.5 12a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5h-12A.75.75 0 0 1 7.5 12Zm-4.875 5.25a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875 0a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5h-12a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
             </svg>
@@ -71,7 +72,7 @@
                                     {{ strtoupper($class->subject) }} - {{ strtoupper($class->name) }}
                                 </div>
                             @empty
-                                <p class="text-white-100 text-sm italic">No classes yet.</p>
+                                <p class="text-black text-sm">- No classes yet.</p>
                             @endforelse
                         </div>
                     </div>
@@ -80,7 +81,8 @@
 
             <!-- Floating Create Button -->
             <button @click="openModal = true"
-                class="fixed bottom-6 right-6 bg-white hover:bg-blue-500 text-black hover:text-white rounded-full shadow-xl w-16 h-16 flex items-center justify-center text-4xl transition z-50">
+                  class="fixed bottom-7 right-6 bg-white hover:bg-blue-500 text-black hover:text-white rounded-full shadow-xl w-16 h-16 flex items-center justify-center text-4xl transition z-50"
+                  title="Add Course">
                 +
             </button>
 

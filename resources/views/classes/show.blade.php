@@ -5,7 +5,8 @@
     <div class="flex justify-between items-center mb-6 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-800 text-white p-6 rounded-2xl shadow-xl">
         {{-- Back Button --}}
         <a href="{{ route('dashboard') }}"
-           class="w-12 h-12 flex items-center justify-center rounded-full border-2 border-white/80 text-white hover:bg-white hover:text-blue-700 transition-all duration-200 shadow-md">
+           class="w-12 h-12 flex items-center justify-center rounded-full border-2 border-white/80 text-white hover:bg-white hover:text-blue-700 transition-all duration-200 shadow-md"
+           title="Back To Dashboard">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-6 h-6" viewBox="0 0 24 24">
                 <path fill-rule="evenodd" d="M9.53 2.47a.75.75 0 0 1 0 1.06L4.81 8.25H15a6.75 6.75 0 0 1 0 13.5h-3a.75.75 0 0 1 0-1.5h3a5.25 5.25 0 1 0 0-10.5H4.81l4.72 4.72a.75.75 0 1 1-1.06 1.06l-6-6a.75.75 0 0 1 0-1.06l6-6a.75.75 0 0 1 1.06 0Z"/>
             </svg>
@@ -29,27 +30,38 @@
             </div>
 
             {{-- Join Code --}}
-            <div class="mt-3 bg-white/15 backdrop-blur-md inline-block px-4 py-1.5 rounded-full shadow-sm border border-white/10">
-                <span class="text-blue-100 font-semibold uppercase tracking-wide">Join Code:</span>
-                <span class="font-bold text-yellow-300 ml-1">{{ $class->join_code }}</span>
-            </div>
-            <br>
+<div class="mt-3 bg-white/15 backdrop-blur-md inline-block px-4 py-1.5 rounded-full shadow-sm border border-white/10">
+    <span class="text-blue-100 font-semibold uppercase tracking-wide">Join Code:</span>
+    <span class="font-bold text-yellow-300 ml-1">{{ $class->join_code }}</span>
+</div>
 
-            <div>
-            @if(auth()->user()->role === 'faculty')
-                <a href="{{ route('attendance.index', $class->id) }}" class="...">View Attendance</a>
-            @endif
-            @if(auth()->user()->role === 'student')
-                <a href="{{ route('attendance.student', $class->id) }}" class="...">My Attendance</a>
-            @endif
-            </div>
+{{-- Add spacing BELOW (mt-4) --}}
+<div class="mt-4">
+    @if(auth()->user()->role === 'faculty')
+        <a href="{{ route('attendance.index', $class->id) }}"
+           class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-500 hover:bg-green-700 text-white text-sm font-medium rounded-lg backdrop-blur-md shadow-md border border-white/20 transition-all duration-200 hover:scale-105 active:scale-95"
+           title="Attendance">
+            Attendance
+        </a>
+    @endif
+
+    @if(auth()->user()->role === 'student')
+        <a href="{{ route('attendance.student', $class->id) }}"
+           class="inline-flex items-center gap-1.5 px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 text-sm font-semibold rounded-lg shadow-md transition-all duration-200 hover:scale-105 active:scale-95"
+           title="View Attendance">
+            Attendance
+        </a>
+    @endif
+</div>
+
             
         </div>
 
         {{-- Add Activity (Faculty Only) --}}
         @if(auth()->user()->role === 'faculty')
             <a href="{{ route('activities.create', $class->id) }}"
-               class="bg-yellow-500 hover:bg-yellow-600 text-white w-16 h-16 flex items-center justify-center rounded-2xl shadow-2xl transition-transform hover:scale-110">
+               class="bg-yellow-500 hover:bg-yellow-600 text-white w-16 h-16 flex items-center justify-center rounded-2xl shadow-2xl transition-transform hover:scale-110"
+               title="Add Activity">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                      stroke-width="2.5" stroke="currentColor" class="w-9 h-9">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -93,7 +105,8 @@
                                             <button 
                                                 type="button"
                                                 @click="open = !open"
-                                                class="text-blue-500 hover:text-blue-700 transition rounded-full p-1 hover:bg-blue-100 focus:outline-none">
+                                                class="text-blue-500 hover:text-blue-700 transition rounded-full p-1 hover:bg-blue-100 focus:outline-none"
+                                                title="Options">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                     width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                                                     <circle cx="12" cy="5" r="2"/>
@@ -122,7 +135,8 @@
                                             type="button"
                                             class="lock-btn px-3 py-1 rounded text-white {{ $activity->is_locked ? 'bg-red-500' : 'bg-green-500' }}"
                                             data-id="{{ $activity->id }}"
-                                            data-locked="{{ $activity->is_locked ? 1 : 0 }}">
+                                            data-locked="{{ $activity->is_locked ? 1 : 0 }}"
+                                            title="Toggle">
                                             {{ $activity->is_locked ? 'Locked' : 'Unlocked' }}
                                         </button>
 
@@ -144,7 +158,8 @@
                                         <button
                                             type="button"
                                             @click="open = !open"
-                                            class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-gray-500 hover:text-blue-600 rounded-full p-1 hover:bg-gray-100 focus:outline-none">
+                                            class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-gray-500 hover:text-blue-600 rounded-full p-1 hover:bg-gray-100 focus:outline-none"
+                                            title="Options">
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                 width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                                                 <circle cx="12" cy="5" r="2"/>
@@ -186,7 +201,8 @@
             {{-- Save Button --}}
             <div class="mt-6 text-center">
                 <button type="submit"
-                        class="bg-blue-600 hover:bg-green-600 text-white flex items-center justify-center mx-auto gap-2 px-6 py-3 rounded-xl shadow-md transition transform hover:scale-105">
+                        class="bg-blue-600 hover:bg-green-600 text-white flex items-center justify-center mx-auto gap-2 px-6 py-3 rounded-xl shadow-md transition transform hover:scale-105"
+                        title="Save">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                          stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -196,7 +212,8 @@
                 </button>
             </div>
             <a href="{{ route('pdf.scores', $class->id) }}"
-   class="bg-red-500 px-4 py-2 rounded text-white">
+   class="px-4 py-2 bg-red-600 hover:bg-red-800 text-white rounded-xl shadow-md transition"
+   title="Export PDF">
    Export Scores PDF
 </a>
         </form>
