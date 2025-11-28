@@ -26,7 +26,8 @@
         {{--  Back Button --}}
         <div class="mb-4 flex justify-start">
             <a href="{{ route('classes.show', $class->id) }}" 
-                class="w-11 h-11 flex items-center justify-center rounded-full border-2 border-white text-white hover:bg-white hover:text-blue-700 transition shadow-md hover:scale-105 duration-150">
+                class="w-11 h-11 flex items-center justify-center rounded-full border-2 border-white text-white hover:bg-white hover:text-blue-700 transition shadow-md hover:scale-105 duration-150"
+                title="Back to Class">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                     class="w-6 h-6" viewBox="0 0 24 24">
                     <path fill-rule="evenodd"
@@ -81,7 +82,8 @@
             {{-- Submit Buttons --}}
             <div class="pt-6 flex justify-end gap-3 border-t border-blue-400/40 mt-8">
                 <button type="submit"
-                    class="px-6 py-2.5 bg-yellow-400 hover:bg-yellow-300 text-black font-bold rounded-lg shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-150">
+                    class="px-6 py-2.5 bg-yellow-400 hover:bg-yellow-300 text-black font-bold rounded-lg shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-150"
+                    title="Add Activity">
                     Add Activity
                 </button>
             </div>
