@@ -86,117 +86,128 @@
         <form id="saveScoresForm" method="POST" action="{{ route('scores.update', $class->id) }}">
             @csrf
 
-            <div class="overflow-x-auto">
-                <div class="max-h-[600px] overflow-y-auto relative rounded-lg custom-scrollbar">
-                    <table class="table-auto border-collapse border w-full">
-                        <thead class="sticky top-0 bg-gray-100 shadow z-10">
-                            <tr>
-                                <th class="border px-4 py-3 text-left font-semibold">Student</th>
-                                @foreach($activities as $activity)
-                                <th class="border px-4 py-2 align-top relative">
-                                    <div class="flex flex-col items-center space-y-1">
-                                        <div class="font-semibold text-gray-800">{{ $activity->name }}</div>
-                                        <div class=" text-gray-600">{{ $activity->type }}</div>
+           <div class="overflow-x-auto">
+    <div class="max-h-[600px] overflow-y-auto relative rounded-lg custom-scrollbar">
+        <table class="table-auto border-collapse border w-full">
+            <thead class="sticky top-0 bg-gray-100 shadow z-10">
+                <tr>
+                    <th class="border px-4 py-3 text-left font-semibold">Student</th>
+                    @foreach($activities as $activity)
+                    <th class="border px-4 py-2 align-top relative">
+                        <div class="flex flex-col items-center space-y-1">
+                            <div class="font-semibold text-gray-800">{{ $activity->name }}</div>
+                            <div class=" text-gray-600">{{ $activity->type }}</div>
 
-                                        <strong class="text-blue-600 font-mono">{{ $activity->code ?? '----' }}</strong>
+                            <strong class="text-blue-600 font-mono">{{ $activity->code ?? '----' }}</strong>
 
-                                        {{-- Dropdown --}}
-                                        <div x-data="{ open: false }" class="absolute top-1 right-1 inline-block">
-                                            <button 
-                                                type="button"
-                                                @click="open = !open"
-                                                class="text-blue-500 hover:text-blue-700 transition rounded-full p-1 hover:bg-blue-100 focus:outline-none"
-                                                title="Options">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                                    <circle cx="12" cy="5" r="2"/>
-                                                    <circle cx="12" cy="12" r="2"/>
-                                                    <circle cx="12" cy="19" r="2"/>
-                                                </svg>
-                                            </button>
+                            {{-- Dropdown --}}
+                            <div x-data="{ open: false }" class="absolute top-1 right-1 inline-block">
+                                <button 
+                                    type="button"
+                                    @click="open = !open"
+                                    class="text-blue-500 hover:text-blue-700 transition rounded-full p-1 hover:bg-blue-100 focus:outline-none"
+                                    title="Options">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                        <circle cx="12" cy="5" r="2"/>
+                                        <circle cx="12" cy="12" r="2"/>
+                                        <circle cx="12" cy="19" r="2"/>
+                                    </svg>
+                                </button>
 
+                                <div x-show="open" @click.outside="open=false" x-cloak
+                                     class="absolute right-0 mt-2 w-24 bg-white border border-gray-200 rounded-md shadow-lg z-50 text-center">
+                                    <a href="{{ route('activities.edit', [$class->id, $activity->id]) }}"
+                                       class="block w-full text-center px-3 py-2 text-sm text-blue-600 hover:bg-blue-100">
+                                        Edit
+                                    </a>
+                                    <button type="button"
+                                            onclick="deleteActivity({{ $class->id }}, {{ $activity->id }})"
+                                            class="block w-full text-center px-3 py-2 text-sm text-red-600 hover:bg-red-100">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
 
-                                            <div x-show="open" @click.outside="open=false" x-cloak
-                                                 class="absolute right-0 mt-2 w-24 bg-white border border-gray-200 rounded-md shadow-lg z-50 text-center">
-                                                <a href="{{ route('activities.edit', [$class->id, $activity->id]) }}"
-                                                   class="block w-full text-center px-3 py-2 text-sm text-blue-600 hover:bg-blue-100">
-                                                    Edit
-                                                </a>
-                                                <button type="button"
-                                                        onclick="deleteActivity({{ $class->id }}, {{ $activity->id }})"
-                                                        class="block w-full text-center px-3 py-2 text-sm text-red-600 hover:bg-red-100">
-                                                    Delete
-                                                </button>
-                                            </div>
-                                        </div>
+                            {{-- Lock --}}
+                            <button 
+                                type="button"
+                                class="lock-btn px-3 py-1 rounded text-white {{ $activity->is_locked ? 'bg-red-500' : 'bg-green-500' }}"
+                                data-id="{{ $activity->id }}"
+                                data-locked="{{ $activity->is_locked ? 1 : 0 }}"
+                                title="Toggle">
+                                {{ $activity->is_locked ? 'Locked' : 'Unlocked' }}
+                            </button>
 
-                                        {{-- Lock --}}
-                                        <button 
-                                            type="button"
-                                            class="lock-btn px-3 py-1 rounded text-white {{ $activity->is_locked ? 'bg-red-500' : 'bg-green-500' }}"
-                                            data-id="{{ $activity->id }}"
-                                            data-locked="{{ $activity->is_locked ? 1 : 0 }}"
-                                            title="Toggle">
-                                            {{ $activity->is_locked ? 'Locked' : 'Unlocked' }}
-                                        </button>
+                            <small class="text-gray-600">(Max: {{ $activity->total_score }})</small>
+                        </div>
+                    </th>
+                    @endforeach
+                </tr>
+            </thead>
 
-                                        <small class="text-gray-600">(Max: {{ $activity->total_score }})</small>
-                                    </div>
-                                </th>
-                                @endforeach
-                            </tr>
-                        </thead>
+            <tbody class="bg-white">
+                @foreach($students as $student)
+                @php $sid = $student->id; @endphp
+                <tr class="hover:bg-gray-50 transition group">
+                    <td class="border px-4 py-2 font-semibold">
+                        <div class="flex items-center justify-between gap-3">
+                            <!-- Left side: Image + Name -->
+                            <div class="flex items-center gap-3">
+                                <img 
+                                    src="{{ $student->profile_photo 
+                                           ? asset('uploads/profile/' . $student->profile_photo)
+                                        : asset('images/profile.png') }}"
+                                    class="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                                    alt="User Avatar"
+                                />
+                                <span>{{ $student->name ?? $student->full_name ?? 'Student' }}</span>
+                            </div>
+                            
+                            <!-- Right side: Dropdown -->
+                            <div x-data="{ open: false }" class="relative inline-block">
+                                <button
+                                    type="button"
+                                    @click="open = !open"
+                                    class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-gray-500 hover:text-blue-600 rounded-full p-1 hover:bg-gray-100 focus:outline-none"
+                                    title="Options">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                        <circle cx="12" cy="5" r="2"/>
+                                        <circle cx="12" cy="12" r="2"/>
+                                        <circle cx="12" cy="19" r="2"/>
+                                    </svg>
+                                </button>
 
-                        <tbody class="bg-white">
-                            @foreach($students as $student)
-                            @php $sid = $student->id; @endphp
-                            <tr class="hover:bg-gray-50 transition group">
-                                <td class="border px-4 py-2 font-semibold flex justify-between items-center relative">
-                                    <span>{{ $student->name ?? $student->full_name ?? 'Student' }}</span>
-                                    {{-- Student row dropdown --}}
-                                    <div x-data="{ open: false }" class="relative inline-block">
-                                        <button
-                                            type="button"
-                                            @click="open = !open"
-                                            class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-gray-500 hover:text-blue-600 rounded-full p-1 hover:bg-gray-100 focus:outline-none"
-                                            title="Options">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                                <circle cx="12" cy="5" r="2"/>
-                                                <circle cx="12" cy="12" r="2"/>
-                                                <circle cx="12" cy="19" r="2"/>
-                                            </svg>
-                                        </button>
+                                <div x-show="open" @click.outside="open=false" x-cloak
+                                    class="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-lg shadow-xl text-center z-50">
+                                    <button type="button"
+                                            onclick="removeStudent({{ $class->id }}, {{ $student->id }})"
+                                            class="flex items-center justify-center gap-2 w-full px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors rounded-md">
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
 
-
-
-                                        <div x-show="open" @click.outside="open=false" x-cloak
-                                            class="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-lg shadow-xl text-center z-50">
-                                            <button type="button"
-                                                    onclick="removeStudent({{ $class->id }}, {{ $student->id }})"
-                                                    class="flex items-center justify-center gap-2 w-full px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors rounded-md">
-                                                Remove
-                                            </button>
-                                        </div>
-
-
-                                @foreach($activities as $activity)
-                                @php $scoreValue = $scores[$sid][$activity->id] ?? ''; @endphp
-                                <td class="border px-4 py-2 text-center">
-                                    <input type="number"
-                                           name="scores[{{ $sid }}][{{ $activity->id }}]"
-                                           value="{{ $scoreValue }}"
-                                           min="0"
-                                           max="{{ $activity->total_score }}"
-                                           class="w-20 border rounded p-1 text-center" />
-                                </td>
-                                @endforeach
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                    @foreach($activities as $activity)
+                    @php $scoreValue = $scores[$sid][$activity->id] ?? ''; @endphp
+                    <td class="border px-4 py-2 text-center">
+                        <input type="number"
+                               name="scores[{{ $sid }}][{{ $activity->id }}]"
+                               value="{{ $scoreValue }}"
+                               min="0"
+                               max="{{ $activity->total_score }}"
+                               class="w-20 border rounded p-1 text-center" />
+                    </td>
+                    @endforeach
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
 
             {{-- Save Button --}}
             <div class="mt-6 text-center">

@@ -22,13 +22,13 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button
-                            class="flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-gray-800 dark:hover:text-white focus:outline-none transition space-x-3"
+                            class="flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-gray-100 hover:text-white focus:outline-none transition space-x-3"
                         >
                             <div class="flex flex-col items-end text-right">
                                 <span class="font-extrabold uppercase text-sm tracking-wide">
                                     {{ Auth::user()->name }}
                                 </span>
-                                <span class="text-xs text-gray-600 dark:text-gray-400">
+                                <span class="text-xs text-gray-400">
                                     {{ Auth::user()->email }}
                                 </span>
                             </div>
@@ -41,7 +41,7 @@
                                     alt="User Avatar"
                                 />
 
-                                <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <svg class="w-5 h-5 text-gray-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.939l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.25a.75.75 0 01-1.06 0L5.25 8.27a.75.75 0 01-.02-1.06z" clip-rule="evenodd" />
                                 </svg>
                             </div>
@@ -66,7 +66,7 @@
 
             <!-- Hamburger for Mobile -->
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white focus:outline-none transition duration-150 ease-in-out">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-white focus:outline-none transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -91,7 +91,7 @@
         <!-- Responsive Settings -->
         <div class="pt-4 pb-1 border-t border-transparent flex flex-col items-center">
             <div class="px-4 text-center">
-                <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
+                <div class="font-medium text-base text-gray-200">{{ Auth::user()->name }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
             </div>
 

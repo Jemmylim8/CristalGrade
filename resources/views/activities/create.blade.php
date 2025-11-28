@@ -61,6 +61,7 @@
                     <option value="Quiz" {{ old('type')=='Quiz' ? 'selected' : '' }}>Quiz</option>
                     <option value="Exam" {{ old('type')=='Exam' ? 'selected' : '' }}>Exam</option>
                     <option value="Assignment" {{ old('type')=='Assignment' ? 'selected' : '' }}>Assignment</option>
+                    <option value="Activity" {{ old('type')=='Activity' ? 'selected' : '' }}>Activity</option>
                 </select>
             </div>
 

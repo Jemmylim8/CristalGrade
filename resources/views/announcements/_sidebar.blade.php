@@ -37,56 +37,68 @@ $announcementsToShow = $sidebarAnnouncements ?? collect();
             <!-- Announcements List -->
             <div class="space-y-4 max-h-[420px] overflow-y-auto pr-2 custom-scrollbar">
                 @foreach($announcementsToShow as $a)
-                    <div 
-                        @click="selected = {{ $a->id }}"
-                        class="p-5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl shadow-md hover:shadow-lg transition duration-200 cursor-pointer"
-                    >
-                        <h4 class="text-lg font-semibold text-yellow-300 leading-tight mb-1">
-                            {{ Str::limit($a->title, 60) }}
-                        </h4>
-                        <div class="text-xs text-blue-100 font-medium mb-2">
-                            {{ $a->user->name ?? 'Staff' }} • {{ $a->created_at->diffForHumans() }}
-                        </div>
-                        <p class="text-sm leading-relaxed text-blue-50">
-                            {{ Str::limit($a->content, 140) }}
-                        </p>
-                        @if($a->attachment_path)
-                            <div class="mt-3">
-                                <a href="{{ asset('storage/' . $a->attachment_path) }}" 
-                                   target="_blank"
-                                   class="inline-flex items-center gap-1 text-xs font-medium text-yellow-200 hover:text-white transition">
-                                    View attachments
-                                </a>
-                            </div>
-                        @endif
-                    </div>
+                   <div 
+    @click="selected = {{ $a->id }}"
+    class="p-5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl shadow-md hover:shadow-lg transition duration-200 cursor-pointer flex gap-4"
+>
+    <!-- Left Content -->
+    <div class="flex-1">
+        <h4 class="text-lg font-semibold text-yellow-300 leading-tight mb-1">
+            {{ Str::limit($a->title, 60) }}
+        </h4>
+        <div class="text-xs text-blue-100 font-medium mb-2">
+            {{ $a->user->name ?? 'Staff' }} • {{ $a->created_at->diffForHumans() }}
+        </div>
+        <p class="text-sm leading-relaxed text-blue-50">
+            {{ Str::limit($a->content, 140) }}
+        </p>
+        @if($a->attachment_path)
+            <div class="mt-3">
+                <a href="{{ asset('storage/' . $a->attachment_path) }}" 
+                   target="_blank"
+                   class="inline-flex items-center gap-1 text-xs font-medium text-yellow-200 hover:text-white transition">
+                    View attachments
+                </a>
+            </div>
+        @endif
+    </div>
+    
+    <!-- Right Image -->
+    <img 
+        src="{{ $a->user->profile_photo 
+               ? asset('uploads/profile/' . $a->user->profile_photo)
+            : asset('images/profile.png') }}"
+        class="w-8 h-8 rounded-full object-cover flex-shrink-0 self-start"
+        alt="User Avatar"
+    />
+</div>
 
                     <!-- Announcement Overlay -->
                     <div 
-                        x-show="selected === {{ $a->id }}"
-                        x-transition
-                        x-cloak
-                        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 overflow-y-auto"
-                        @click.self="selected = null"
-                    >
-                        <div class="bg-gradient-to-br from-blue-600 to-blue-700 shadow-2xl rounded-2xl p-8 border border-blue-400/60 backdrop-blur-sm">
-                            <h2 class="text-2xl font-extrabold text-yellow-300 mb-2">{{ $a->title }}</h2>
-                            <p class="text-sm text-blue-100 mb-3">
-                                {{ $a->user->name ?? 'Staff' }} • {{ $a->created_at->format('M d, Y h:i A') }}
-                            </p>
-                            <p class="text-base leading-relaxed text-blue-50 mb-4 whitespace-pre-line">{{ $a->content }}</p>
+    x-show="selected === {{ $a->id }}"
+    x-transition
+    x-cloak
+    class="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999] p-4 overflow-y-auto"
+    @click.self="selected = null"
+>
+    <div class="bg-gradient-to-br from-blue-600 to-blue-700 shadow-2xl rounded-2xl p-8 border border-blue-400/60 backdrop-blur-sm relative">
+        <h2 class="text-2xl font-extrabold text-yellow-300 mb-2">{{ $a->title }}</h2>
+        <p class="text-sm text-blue-100 mb-3">
+            {{ $a->user->name ?? 'Staff' }} • {{ $a->created_at->format('M d, Y h:i A') }}
+        </p>
+        <p class="text-base leading-relaxed text-blue-50 mb-4 whitespace-pre-line">{{ $a->content }}</p>
 
-                            @if($a->attachment_path)
-                                <a href="{{ asset('storage/' . $a->attachment_path) }}" 
-                                   target="_blank"
-                                   class="inline-flex items-center gap-1 text-sm font-medium text-yellow-200 hover:text-white underline transition">
-                                    View Attachment
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+        @if($a->attachment_path)
+            <a href="{{ asset('storage/' . $a->attachment_path) }}" 
+               target="_blank"
+               class="inline-flex items-center gap-1 text-sm font-medium text-yellow-200 hover:text-white underline transition">
+                View Attachment
+            </a>
+        @endif
+    </div>
+</div>
+@endforeach
+</div>
         @endif
 
         <!-- Create Announcement Button -->

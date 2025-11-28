@@ -32,7 +32,7 @@ class ActivityController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|string|in:Quiz,Exam,Assignment',
+            'type' => 'required|string|in:Quiz,Exam,Assignment,Activity',
             'total_score' => 'required|integer|min:1',
             'due_date' => 'nullable|date',
         ]);

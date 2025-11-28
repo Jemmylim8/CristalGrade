@@ -56,7 +56,7 @@
 
     <div class="relative">
         <!-- Dropdown Menu (Moved OUTSIDE anchor) -->
-        <div x-data="{ open: false }" class="absolute top-3 right-3 z-50">
+        <div x-data="{ open: false }" class="absolute top-3 right-3 z-10">
             <!-- Dots Icon -->
             <button 
                 type="button"
@@ -109,11 +109,21 @@
             </div>
 
             <!-- Footer -->
-            <div class="px-3 py-3 text-sm font-bold text-gray-700" style="background-color: {{ $footerBg }};">
-                <div>{{ $class->section ?? 'N/A' }}</div>
-                <div>{{ $class->schedule ?? 'TBA' }}</div>
-                <div>{{ $class->faculty?->name ?? '—' }}</div>
-            </div>
+            <div class="px-3 py-3 text-sm font-bold text-gray-700 flex items-center justify-between" style="background-color: {{ $footerBg }};">
+    <div>
+        <div>{{ $class->section ?? 'N/A' }}</div>
+        <div>{{ $class->schedule ?? 'TBA' }}</div>
+        <div>{{ $class->faculty?->name ?? '—' }}</div>
+    </div>
+    
+    <img 
+        src="{{ $class->faculty?->profile_photo 
+               ? asset('uploads/profile/' . $class->faculty?->profile_photo)
+            : asset('images/profile.png') }}"
+        class="w-10 h-10 rounded-full object-cover flex-shrink-0"
+        alt="User Avatar"
+    />
+</div>
         </a>
     </div>
 @endforeach
