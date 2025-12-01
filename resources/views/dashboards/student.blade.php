@@ -135,9 +135,18 @@
             <button 
                 type="button"
                 @click="openModal = true"
-                class="fixed bottom-6 right-6 bg-white hover:bg-blue-500 text-black hover:text-white rounded-full shadow-xl w-16 h-16 flex items-center justify-center text-4xl transition z-50"
+                class="fixed bottom-6 right-6 bg-white hover:bg-blue-500 text-black hover:text-white rounded-full shadow-xl w-20 h-20 flex items-center justify-center transition z-50"
                 title="Join Class">
-                +
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke-width="2" 
+                    stroke="currentColor" 
+                    class="w-10 h-10">
+                    <path stroke-linecap="round" 
+                        stroke-linejoin="round" 
+                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
             </button>
 
             {{-- Join Class Modal --}}

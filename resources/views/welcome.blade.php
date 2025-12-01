@@ -21,8 +21,8 @@
 
             {{-- Welcome Text --}}
             <div class="space-y-2 mt-20">
-                <p class="text-white text-lg tracking-widest font-semibold">– WELCOME TO –</p>
-                <img src="{{ asset('images/logoSmall.png') }}" class="w-64 h-auto mx-auto flex items-center" alt="CristalGrade Logo">
+                <p class="text-white text-lg tracking-widest font-semibold">– WELCOME –</p>
+                <img src="{{ asset('images/logoSmall.png') }}" class="w-1668 h-618 mx-auto flex items-center" alt="CristalGrade Logo">
                 <p class="text-white text-sm font-medium">Academic Year 2024-2025</p>
             </div>
         </div>

@@ -68,7 +68,7 @@ $announcementsToShow = $sidebarAnnouncements ?? collect();
                 src="{{ $a->user->profile_photo 
                        ? asset('uploads/profile/' . $a->user->profile_photo)
                     : asset('images/profile.png') }}"
-                class="w-10 h-10 rounded-full object-cover flex-shrink-0 self-start border-2 border-blue-400"
+                class="w-10 h-10 rounded-full object-cover flex-shrink-0 self-start border-2 border-yellow-300"
                 alt="User Avatar"
             />
         </div>

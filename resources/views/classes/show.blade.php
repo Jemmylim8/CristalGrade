@@ -2,7 +2,8 @@
 <div class="container mx-auto p-6 space-y-6">
 <script src="https://cdn.tailwindcss.com"></script>
     {{-- HEADER --}}
-    <div class="flex justify-between items-center mb-6 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-800 text-white p-6 rounded-2xl shadow-xl">
+<div class="relative mb-6 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-800 text-white p-6 rounded-2xl shadow-xl">
+    <div class="flex justify-between items-center">
         {{-- Back Button --}}
         <a href="{{ route('dashboard') }}"
            class="w-12 h-12 flex items-center justify-center rounded-full border-2 border-white/80 text-white hover:bg-white hover:text-blue-700 transition-all duration-200 shadow-md"
@@ -30,31 +31,29 @@
             </div>
 
             {{-- Join Code --}}
-<div class="mt-3 bg-white/15 backdrop-blur-md inline-block px-4 py-1.5 rounded-full shadow-sm border border-white/10">
-    <span class="text-blue-100 font-semibold uppercase tracking-wide">Join Code:</span>
-    <span class="font-bold text-yellow-300 ml-1">{{ $class->join_code }}</span>
-</div>
+            <div class="mt-3 bg-white/15 backdrop-blur-md inline-block px-4 py-1.5 rounded-full shadow-sm border border-white/10">
+                <span class="text-blue-100 font-semibold uppercase tracking-wide">Join Code:</span>
+                <span class="font-bold text-yellow-300 ml-1">{{ $class->join_code }}</span>
+            </div>
 
-{{-- Add spacing BELOW (mt-4) --}}
-<div class="mt-4">
-    @if(auth()->user()->role === 'faculty')
-        <a href="{{ route('attendance.index', $class->id) }}"
-           class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-500 hover:bg-green-700 text-white text-sm font-medium rounded-lg backdrop-blur-md shadow-md border border-white/20 transition-all duration-200 hover:scale-105 active:scale-95"
-           title="Attendance">
-            Attendance
-        </a>
-    @endif
+            {{-- Attendance Button --}}
+            <div class="mt-4">
+                @if(auth()->user()->role === 'faculty')
+                    <a href="{{ route('attendance.index', $class->id) }}"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-500 hover:bg-green-700 text-white text-sm font-medium rounded-lg backdrop-blur-md shadow-md border border-white/20 transition-all duration-200 hover:scale-105 active:scale-95"
+                    title="Attendance">
+                        Attendance
+                    </a>
+                @endif
 
-    @if(auth()->user()->role === 'student')
-        <a href="{{ route('attendance.student', $class->id) }}"
-           class="inline-flex items-center gap-1.5 px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 text-sm font-semibold rounded-lg shadow-md transition-all duration-200 hover:scale-105 active:scale-95"
-           title="View Attendance">
-            Attendance
-        </a>
-    @endif
-</div>
-
-            
+                @if(auth()->user()->role === 'student')
+                    <a href="{{ route('attendance.student', $class->id) }}"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 text-sm font-semibold rounded-lg shadow-md transition-all duration-200 hover:scale-105 active:scale-95"
+                    title="View Attendance">
+                        Attendance
+                    </a>
+                @endif
+            </div>
         </div>
 
         {{-- Add Activity (Faculty Only) --}}
@@ -70,6 +69,28 @@
             </a>
         @endif
     </div>
+
+    {{-- Faculty Info - Bottom Right Corner (Students Only) --}}
+    @if(auth()->user()->role === 'student')
+        <div class="absolute bottom-4 right-6 flex items-center gap-3">
+            <div class="text-right">
+                <span class="block font-extrabold uppercase text-sm tracking-wide">
+                    {{ $class->faculty->name }}
+                </span>
+                <span class="block text-xs text-blue-200">
+                    {{ $class->faculty->email }}
+                </span>
+            </div>
+            <img 
+                src="{{ $class->faculty?->profile_photo 
+                    ? asset('uploads/profile/' . $class->faculty?->profile_photo)
+                    : asset('images/profile.png') }}"
+                class="w-12 h-12 rounded-full object-cover border-2 border-yellow-300 shadow-md"
+                alt="{{ $class->faculty->name }}"
+            />
+        </div>
+    @endif
+</div>
 
     {{-- SUCCESS --}}
     @if(session('success'))
@@ -235,65 +256,133 @@
     @endif
 
    {{-- ============================ --}}
-{{-- ============================ --}}
 {{-- STUDENT VIEW (SINGLE CODE INPUT) --}}
 {{-- ============================ --}}
 @if(auth()->user()->role === 'student')
 
-<div class="bg-white shadow-xl rounded-2xl p-6 border border-gray-100">
-    <h2 class="text-2xl font-bold text-blue-700 mb-4">Your Grades</h2>
+<div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
+    <!-- Header Section -->
+    <div class="mb-6">
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">Your Grades</h2>
+        <p class="text-gray-600">View and track your academic performance</p>
+    </div>
 
     {{-- Single Activity Code Input --}}
-    <div class="mb-4 flex items-center space-x-2">
-        <label for="activityCode" class="font-semibold">Enter Activity Code:</label>
-        <input type="password" id="activityCode" class="border rounded p-1 w-32" placeholder="e.g. 0052" maxlength="4">
+    <div class="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 flex-1">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                <label for="activityCode" class="font-semibold text-gray-700">Enter Activity Code:</label>
+            </div>
+            <input type="password" 
+                   id="activityCode" 
+                   class="border-2 border-gray-300 rounded-lg px-4 py-2 w-40 text-center font-mono text-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition" 
+                   placeholder="••••" 
+                   maxlength="4">
+        </div>
     </div>
 
     <form id="studentScoreForm" method="POST" action="{{ route('scores.update', $class->id) }}">
         @csrf
-        <div class="overflow-x-auto">
-            <table class="table-auto border-collapse border w-full">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="border px-4 py-2 text-left font-semibold">Activity</th>
-                        <th class="border px-4 py-2 text-center font-semibold">Score</th>
-                        <th class="border px-4 py-2 text-center font-semibold">Total</th>
-                        <th class="border px-4 py-2 text-center font-semibold">Date</th>
-                        <th class="border px-4 py-2 text-center font-semibold">Due</th>
+        <div class="overflow-x-auto rounded-xl border border-gray-200">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-gradient-to-r from-blue-600 to-blue-700">
+                        <th class="px-6 py-4 text-left text-sm font-bold text-white">Activity</th>
+                        <th class="px-6 py-4 text-center text-sm font-bold text-white">Score</th>
+                        <th class="px-6 py-4 text-center text-sm font-bold text-white">Total</th>
+                        <th class="px-6 py-4 text-center text-sm font-bold text-white">Date</th>
+                        <th class="px-6 py-4 text-center text-sm font-bold text-white">Due Date</th>
                     </tr>
                 </thead>
 
-                <tbody>
+                <tbody class="divide-y divide-gray-200">
                     @php $myId = auth()->user()->id; @endphp
                     @foreach($activities as $activity)
                         @php $myScore = $scores[$myId][$activity->id] ?? ''; @endphp
                         <tr data-activity-id="{{ $activity->id }}"
                             data-activity-code="{{ $activity->code }}"
-                            data-locked="{{ $activity->is_locked ? 1 : 0 }}">
-                            <td class="border px-4 py-2 font-semibold">{{ $activity->name }}({{$activity->type}})</td>
-                            <td class="border px-4 py-2 text-center">
+                            data-locked="{{ $activity->is_locked ? 1 : 0 }}"
+                            class="hover:bg-gray-50 transition">
+                            
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex-shrink-0">
+                                        @if($activity->type === 'quiz')
+                                            
+                                        @elseif($activity->type === 'exam')
+                                            
+                                        @else
+                                           
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900">{{ $activity->name }}</div>
+                                        <div class="text-xs text-gray-500 uppercase font-medium">{{ $activity->type }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <td class="px-6 py-4 text-center">
                                 <input type="number"
                                        name="scores[{{ $myId }}][{{ $activity->id }}]"
                                        value="{{ $myScore }}"
                                        min="0"
                                        max="{{ $activity->total_score }}"
-                                       class="score-input w-20 border rounded p-1 text-center bg-gray-100 cursor-not-allowed"
+                                       class="score-input w-24 border-2 border-gray-300 rounded-lg px-3 py-2 text-center bg-gray-100 cursor-not-allowed font-semibold"
                                        readonly
                                        style="display: none;">
-                                <span class="score-display">{{ $myScore ?: '—' }}</span>
+                                <span class="score-display inline-flex items-center justify-center w-16 h-10 rounded-lg 
+                                    {{ $myScore ? 'bg-green-100 text-green-700 font-bold' : 'bg-gray-100 text-gray-400' }}">
+                                    {{ $myScore ?: '—' }}
+                                </span>
                             </td>
-                            <td class="border px-4 py-2 text-center">{{ $activity->total_score }}</td>
-                            <td class="border px-4 py-2 text-center">{{ $activity->created_at->toDateString(); }}</td>
-                            <td class="border px-4 py-2 text-center">{{ $activity->due_date ?? '—' }}</td>
+                            
+                            <td class="px-6 py-4 text-center">
+                                <span class="inline-flex items-center justify-center w-16 h-10 rounded-lg bg-blue-100 text-blue-700 font-bold">
+                                    {{ $activity->total_score }}
+                                </span>
+                            </td>
+                            
+                            <td class="px-6 py-4 text-center text-gray-600">
+                                <div class="flex items-center justify-center gap-1">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                    <span class="font-medium">{{ $activity->created_at->format('M d, Y') }}</span>
+                                </div>
+                            </td>
+                            
+                            <td class="px-6 py-4 text-center">
+                                @if($activity->due_date)
+                                    <div class="flex items-center justify-center gap-1">
+                                        <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                        <span class="font-medium text-gray-600">{{ \Carbon\Carbon::parse($activity->due_date)->format('M d, Y') }}</span>
+                                    </div>
+                                @else
+                                    <span class="text-gray-400">—</span>
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
 
-        <div class="mt-4 text-center">
-            <button type="submit" id="saveBtn" class="bg-blue-600 hover:bg-green-600 text-white px-6 py-2 rounded shadow-md hidden">
-                Save Scores
+        <div class="mt-6 flex justify-center">
+            <button type="submit" 
+                    id="saveBtn" 
+                    class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-xl font-semibold transition-all duration-200 hidden">
+                <span class="flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Save Scores
+                </span>
             </button>
         </div>
     </form>
@@ -318,15 +407,15 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!locked && enteredCode === correctCode) {
                 input.style.display = "inline-block";
                 input.readOnly = false;
-                input.classList.remove("bg-gray-100","cursor-not-allowed");
-                input.classList.add("bg-white","border-blue-400");
+                input.classList.remove("bg-gray-100","cursor-not-allowed","border-gray-300");
+                input.classList.add("bg-white","border-blue-500");
                 display.style.display = "none";
                 valid = true;
             } else {
                 input.style.display = "none";
                 input.readOnly = true;
-                input.classList.add("bg-gray-100","cursor-not-allowed");
-                input.classList.remove("bg-white","border-blue-400");
+                input.classList.add("bg-gray-100","cursor-not-allowed","border-gray-300");
+                input.classList.remove("bg-white","border-blue-500");
                 display.style.display = "inline";
             }
         });
