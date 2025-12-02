@@ -36,11 +36,11 @@
                         <!-- Announcement Card -->
                         <div 
                             @click="selected = {{ $a->id }}"
-                            class="relative p-5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl shadow-md hover:shadow-lg transition duration-200 cursor-pointer">
+                            class="relative p-5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl shadow-md hover:shadow-lg transition duration-200 cursor-pointer overflow-hidden">
 
                             <!-- Dropdown Menu -->
                             @if(auth()->user()->id === $a->user_id || auth()->user()->role === 'admin')
-                                <div x-data="{ open: false }" class="absolute top-3 right-3">
+                                <div x-data="{ open: false }" class="absolute top-3 right-3 z-10">
                                     <button 
                                         @click.stop="open = !open"
                                         class="text-blue-100 hover:text-white transition rounded-full p-1 hover:bg-blue-500/30"
@@ -117,12 +117,12 @@
                             @endif
 
                             <!-- Title & Summary -->
-                            <h4 class="text-lg font-semibold text-yellow-300 mb-1">{{ Str::limit($a->title, 60) }}</h4>
-                            <div class="text-xs text-blue-100 mb-2">
+                            <h4 class="text-lg font-semibold text-yellow-300 mb-1 break-words pr-8" style="word-break: break-word; overflow-wrap: break-word;">{{ Str::limit($a->title, 60) }}</h4>
+                            <div class="text-xs text-blue-100 mb-2 truncate pr-8">
                                 {{ $a->user->name ?? 'Staff' }} • {{ $a->created_at->diffForHumans() }}
                             </div>
-                            <p class="text-sm text-blue-50">{{ Str::limit($a->content, 140) }}</p>
-
+                            <p class="text-sm text-blue-50 pr-14 mb-12 break-words overflow-hidden" style="word-break: break-word; overflow-wrap: break-word;">{{ Str::limit($a->content, 140) }}</p>
+                            
                             @if($a->attachment_path)
                                 <div class="mt-3">
                                     <a href="{{ asset('storage/' . $a->attachment_path) }}" 
@@ -132,9 +132,18 @@
                                     </a>
                                 </div>
                             @endif
+                            
+                            <!-- Profile Image - Bottom Right Corner -->
+                            <img 
+                                src="{{ $a->user->profile_photo 
+                                       ? asset('uploads/profile/' . $a->user->profile_photo)
+                                    : asset('images/profile.png') }}"
+                                class="w-10 h-10 rounded-full object-cover absolute bottom-3 right-3 border-2 border-blue-400 flex-shrink-0"
+                                alt="User Avatar"
+                            />
                         </div>
 
-                        <!-- Overlay (No Close Button) -->
+                        <!-- Overlay -->
                         <div 
                             x-show="selected === {{ $a->id }}"
                             x-transition:enter="transition ease-out duration-200"
@@ -143,22 +152,48 @@
                             x-transition:leave="transition ease-in duration-150"
                             x-transition:leave-start="opacity-100 scale-100"
                             x-transition:leave-end="opacity-0 scale-95"
-                            class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+                            class="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999] p-4"
                             x-cloak
-                            @click.self="selected = null">
+                            @click.self="selected = null"
+                            style="overflow-y: auto;">
 
-                            <div class="p-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl shadow-2xl max-w-xl w-full">
-                                <!-- Content -->
-                                <h2 class="text-2xl font-extrabold text-yellow-300 mb-2">{{ $a->title }}</h2>
-                                <p class="text-sm text-blue-100 mb-3">{{ $a->user->name ?? 'Staff' }} • {{ $a->created_at->format('M d, Y h:i A') }}</p>
-                                <p class="text-base leading-relaxed text-blue-50 mb-4">{{ $a->content }}</p>
+                            <div class="p-8 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-2xl shadow-2xl max-w-2xl w-full relative my-8 overflow-hidden">
 
+                                <!-- User Info with Avatar -->
+                                <div class="flex items-center gap-3 mb-4">
+                                    <img 
+                                        src="{{ $a->user->profile_photo 
+                                               ? asset('uploads/profile/' . $a->user->profile_photo)
+                                            : asset('images/profile.png') }}"
+                                        class="w-12 h-12 rounded-full object-cover border-2 border-yellow-300 flex-shrink-0"
+                                        alt="User Avatar"
+                                    />
+                                    <div class="min-w-0 flex-1">
+                                        <h3 class="text-lg font-bold text-yellow-300 break-words">{{ $a->user->name ?? 'Staff' }}</h3>
+                                        <p class="text-xs text-blue-100 truncate">{{ $a->created_at->timezone('Asia/Manila')->format('M d, Y h:i A') }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Title -->
+                                <h2 class="text-2xl font-extrabold text-white mb-4 break-words">{{ $a->title }}</h2>
+                                
+                                <!-- Content - Full text displayed with proper word wrapping -->
+                                <div class="text-base leading-relaxed text-blue-50 mb-4 whitespace-pre-line break-words overflow-hidden" style="word-wrap: break-word; overflow-wrap: break-word;">
+                                    {{ $a->content }}
+                                </div>
+
+                                <!-- Attachment -->
                                 @if($a->attachment_path)
-                                    <a href="{{ asset('storage/' . $a->attachment_path) }}" 
-                                       target="_blank"
-                                       class="inline-flex items-center gap-1 text-sm font-medium text-yellow-200 hover:text-white underline transition">
-                                        View Attachment
-                                    </a>
+                                    <div class="mt-6 pt-4 border-t border-blue-400/40">
+                                        <a href="{{ asset('storage/' . $a->attachment_path) }}" 
+                                           target="_blank"
+                                           class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-400 hover:bg-yellow-300 text-black font-semibold rounded-lg transition">
+                                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                            </svg>
+                                            <span class="truncate">View Attachment</span>
+                                        </a>
+                                    </div>
                                 @endif
                             </div>
                         </div>
