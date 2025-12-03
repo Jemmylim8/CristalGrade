@@ -5,25 +5,32 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Attendance;
 use App\Models\AttendanceRecord;
+use App\Models\ClassModel;
 use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
-    // Show attendance sessions and date picker for a class
+    // Show attendance sessions for a class
     public function index($classId)
     {
-        $class = \App\Models\ClassModel::findOrFail($classId);
-        $students = $class->students; // expects relation
+        $class = ClassModel::findOrFail($classId);
+        $this->checkFacultyOwnership($class);
+        $this->checkStudentMembership($class);
+
+        $students = $class->students;
         $sessions = Attendance::where('class_id', $classId)
-            ->orderBy('date', 'desc')
+            ->orderByDesc('date')
             ->get();
 
-        return view('attendance.index', compact('class', 'students', 'sessions'));
+        return view('attendance.index', compact('class','students','sessions'));
     }
 
-    // Store or overwrite attendance
+    // Store attendance
     public function store(Request $request, $classId)
     {
+        $class = ClassModel::findOrFail($classId);
+        $this->checkFacultyOwnership($class);
+
         $request->validate([
             'date' => 'required|date',
             'records' => 'required|array'
@@ -31,44 +38,39 @@ class AttendanceController extends Controller
 
         $date = Carbon::parse($request->date)->toDateString();
 
-        // Check if attendance already exists
         $existing = Attendance::where('class_id', $classId)
             ->whereDate('date', $date)
             ->first();
 
-        // If exists and user has NOT confirmed overwrite
         if ($existing && !$request->boolean('confirm')) {
             return back()->with([
                 'warning'  => 'Attendance for this date already exists. Do you want to overwrite it?',
                 'old_date' => $date
-            ])->withInput(); // preserves records
+            ])->withInput();
         }
 
-        // If exists and confirm=1 → overwrite
         if ($existing) {
             $attendance = $existing;
-            $attendance->records()->delete(); // delete old records
+            $attendance->records()->delete();
         } else {
-            // Otherwise create new attendance
             $attendance = Attendance::create([
-                'class_id'   => $classId,
-                'date'       => $date,
+                'class_id' => $classId,
+                'date' => $date,
                 'created_by' => auth()->id(),
             ]);
         }
 
-        // Store or update records
         foreach ($request->input('records', []) as $studentId => $payload) {
             AttendanceRecord::create([
                 'attendance_id' => $attendance->id,
-                'student_id'    => $studentId,
-                'status'        => $payload['status'],
-                'remarks'       => $payload['remarks'] ?? null
+                'student_id' => $studentId,
+                'status' => $payload['status'],
+                'remarks' => $payload['remarks'] ?? null
             ]);
         }
 
         return redirect()->route('attendance.index', $classId)
-            ->with('success', 'Attendance saved successfully.');
+            ->with('success','Attendance saved successfully.');
     }
 
     // Destroy attendance session
@@ -96,7 +98,8 @@ class AttendanceController extends Controller
 
     // Show a single attendance session
     public function show($classId, Attendance $attendance)
-    {
+    {   $this->checkStudentMembership($class);
+
         $class = \App\Models\ClassModel::findOrFail($classId);
         $records = $attendance->records()->with('student')->get();
 
@@ -138,16 +141,16 @@ class AttendanceController extends Controller
     }
 
     // PDF export
-    public function exportPdf($classId, Request $request)
+     public function exportPdf($classId, Request $request)
     {
+        $class = ClassModel::findOrFail($classId);
+        $this->checkFacultyOwnership($class);
+
         $date = $request->query('date');
-        $class = \App\Models\ClassModel::findOrFail($classId);
+        $query = Attendance::where('class_id', $classId)->with(['records.student']);
+        if ($date) $query->whereDate('date', $date);
 
-        $query = Attendance::where('class_id', $classId)
-            ->with(['records.student']);
-        if ($date) $query->where('date', $date);
-
-        $sessions = $query->orderBy('date','desc')->get();
+        $sessions = $query->orderByDesc('date')->get();
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.attendance', compact('class','sessions','date'));
         return $pdf->download("attendance-{$class->id}-" . ($date ?: 'all') . ".pdf");
