@@ -18,6 +18,12 @@
             — Attendance for {{ $attendance->date }}
         </span>
     </h1>
+    <form action="{{ route('attendance.destroy', $attendance->id) }}" method="POST"
+      onsubmit="return confirm('Delete this attendance?');">
+    @csrf
+    @method('DELETE')
+    <button class="text-red-600 hover:underline">Delete</button>
+</form>
 
     <!-- Success Message -->
     @if(session('success'))

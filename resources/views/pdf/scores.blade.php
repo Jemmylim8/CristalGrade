@@ -2,11 +2,39 @@
 <html>
 <head>
     <style>
-        body { font-family: sans-serif; font-size: 12px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid black; padding: 4px; text-align: center; }
-        th { background: #eee; }
-    </style>
+    body { 
+        font-family: sans-serif; 
+        font-size: 11px;
+    }
+
+    table { 
+        width: 100%; 
+        border-collapse: collapse; 
+        margin-bottom: 20px; 
+        table-layout: fixed; /* prevents overlap */
+    }
+
+    th, td { 
+        border: 1px solid black; 
+        padding: 4px; 
+        text-align: center; 
+        word-wrap: break-word; 
+        font-size: 10px;
+    }
+
+    th { 
+        background: #eee; 
+    }
+
+    thead {
+        display: table-header-group; /* repeat header every page */
+    }
+
+    tr { 
+        page-break-inside: avoid; 
+    }
+</style>
+
 </head>
 <body>
 

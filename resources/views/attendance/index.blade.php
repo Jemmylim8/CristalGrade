@@ -48,7 +48,7 @@
     <!-- TAKE ATTENDANCE AREA -->
     <div id="takeArea" class="hidden mt-6">
 
-    <form method="POST" action="{{ route('attendance.store', $class->id) }}"
+    <form method="POST" id="attendanceForm" action="{{ route('attendance.store', $class->id) }}"
           class="bg-white/40 backdrop-blur-lg rounded-2xl p-8 shadow-xl border border-gray-300/40 space-y-6">
 
         @csrf
@@ -160,9 +160,40 @@
 <!-- SCRIPT -->
 <script>
 document.getElementById('takeBtn').addEventListener('click', () => {
-    document.getElementById('takeArea').classList.remove('hidden');
-    document.getElementById('formDate').value = document.getElementById('attendanceDate').value;
+    let date = document.getElementById('attendanceDate').value;
+    let classId = "{{ $class->id }}";
+
+    if (!date) {
+        alert("Please select a date first.");
+        return;
+    }
+
+    fetch(`/attendance/check/${classId}/${date}`)
+        .then(response => response.json())
+        .then(data => {
+            // remove any old confirm input
+            let oldConfirm = document.querySelector("#attendanceForm input[name='confirm']");
+            if (oldConfirm) oldConfirm.remove();
+
+            if (data.exists) {
+                if (confirm("Attendance for this date already exists. Overwrite?")) {
+                    document.getElementById('takeArea').classList.remove('hidden');
+                    document.getElementById('formDate').value = date;
+
+                    let confirmInput = document.createElement('input');
+                    confirmInput.type = "hidden";
+                    confirmInput.name = "confirm";
+                    confirmInput.value = "1";
+                    document.querySelector("#attendanceForm").appendChild(confirmInput);
+                }
+            } else {
+                document.getElementById('takeArea').classList.remove('hidden');
+                document.getElementById('formDate').value = date;
+            }
+        });
 });
+
 </script>
+
 
 </x-app-layout>
