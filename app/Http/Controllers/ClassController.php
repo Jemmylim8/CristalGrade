@@ -93,7 +93,30 @@ class ClassController extends Controller
 
         return redirect()->route('dashboard.faculty')->with('success', 'Class deleted successfully!');
     }
+    public function joinClass(Request $request)
+    {
+        $request->validate([
+            'join_code' => 'required|string|size:6',
+        ]);
 
+        $class = ClassModel::where('join_code', $request->join_code)->first();
+
+        if (!$class) {
+            return back()->withErrors(['join_code' => 'Invalid class code.']);
+        }
+
+        auth()->user()->classes()->syncWithoutDetaching([$class->id]);
+        foreach ($class->activities as $activity) {
+            \App\Models\Score::firstOrCreate([
+                'student_id' => $student->id,
+                'activity_id' => $activity->id,
+            ], [
+                'score' => null,
+                'reminder_sent' => false,
+            ]);
+        }
+        return back()->with('success', 'You have successfully joined the class!');
+    }
     // Show class details
     public function show($classId)
     {   

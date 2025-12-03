@@ -6,7 +6,7 @@ use App\Models\ClassModel;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 use App\Models\User;
-
+use App\Models\Score;
 class ActivityController extends Controller
 {
     // List activities for a class
@@ -29,22 +29,38 @@ class ActivityController extends Controller
 // }
 
     public function store(Request $request, ClassModel $class)
-    {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|in:Quiz,Exam,Assignment,Activity',
-            'total_score' => 'required|integer|min:1',
-            'due_date' => 'nullable|date',
+{   
+    // Validate input
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+        'type' => 'required|string|in:Quiz,Exam,Assignment,Activity',
+        'total_score' => 'required|integer|min:1',
+        'due_date' => 'nullable|date',
+    ]);
+
+    // Default lock status
+    $data['is_locked'] = true;
+    $data['code'] = random_int(1000, 9999);
+
+    // Create the activity first
+    $activity = $class->activities()->create($data);
+
+    // Seed scores for all students in this class
+    $students = $class->students; // already related to $class
+    foreach ($students as $student) {
+        \App\Models\Score::firstOrCreate([
+            'student_id' => $student->id,
+            'activity_id' => $activity->id,
+        ], [
+            'score' => null,
+            'reminder_sent' => false,
         ]);
-        $data['code'] = random_int(1000, 9999);
-
-    // Default lock status (locked = cannot use code on student side yet)
-        $data['is_locked'] = true;
-        $class->activities()->create($data);
-
-        return redirect()->route('classes.show', $class->id)
-                         ->with('success', 'Activity added successfully.');
     }
+
+    return redirect()->route('classes.show', $class->id)
+                     ->with('success', 'Activity added successfully.');
+}
+
 
     // Show edit form
     public function edit(ClassModel $class, Activity $activity)
