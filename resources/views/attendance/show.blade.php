@@ -22,7 +22,7 @@
       onsubmit="return confirm('Delete this attendance?');">
     @csrf
     @method('DELETE')
-    <button class="text-red-600 hover:underline">Delete</button>
+    <button class="px-4 py-2 bg-red-600 hover:bg-red-800 text-white rounded-xl shadow-md transition font-bold">Delete</button>
 </form>
 
     <!-- Success Message -->

@@ -28,7 +28,7 @@
                                 <span class="font-extrabold uppercase text-sm tracking-wide">
                                     {{ Auth::user()->name }}
                                 </span>
-                                <span class="text-xs text-gray-400">
+                                <span class="text-xs text-gray-800">
                                     {{ Auth::user()->email }}
                                 </span>
                             </div>

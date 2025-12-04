@@ -40,7 +40,7 @@
             <div class="mt-4">
                 @if(auth()->user()->role === 'faculty')
                     <a href="{{ route('attendance.index', $class->id) }}"
-                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-500 hover:bg-green-700 text-white text-sm font-medium rounded-lg backdrop-blur-md shadow-md border border-white/20 transition-all duration-200 hover:scale-105 active:scale-95"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-500 hover:bg-green-700 text-white text-sm font-bold rounded-lg backdrop-blur-md shadow-md border border-white/20 transition-all duration-200 hover:scale-105 active:scale-95"
                     title="Attendance">
                         Attendance
                     </a>

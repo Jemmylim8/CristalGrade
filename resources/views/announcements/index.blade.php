@@ -138,7 +138,7 @@
                                 src="{{ $a->user->profile_photo 
                                        ? asset('uploads/profile/' . $a->user->profile_photo)
                                     : asset('images/profile.png') }}"
-                                class="w-10 h-10 rounded-full object-cover absolute bottom-3 right-3 border-2 border-blue-400 flex-shrink-0"
+                                class="w-10 h-10 rounded-full object-cover absolute bottom-3 right-3 border-2 border-yellow-300 flex-shrink-0"
                                 alt="User Avatar"
                             />
                         </div>

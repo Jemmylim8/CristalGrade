@@ -25,13 +25,13 @@
                    class="px-3 py-2 rounded-xl border border-gray-300 bg-gray-100 text-gray-700 focus:ring-blue-500 focus:border-blue-500" />
 
             <button id="takeBtn"
-                class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md transition"
+                class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md transition font-bold"
                 title="Take Attendance">
                 Take Attendance
             </button>
 
             <a href="{{ route('pdf.attendance', $class->id) }}"
-               class="px-4 py-2 bg-red-600 hover:bg-red-800 text-white rounded-xl shadow-md transition"
+               class="px-4 py-2 bg-red-600 hover:bg-red-800 text-white rounded-xl shadow-md transition font-bold"
                title="Export PDF">
                 Export PDF
             </a>

@@ -24,7 +24,7 @@
             <div class="space-y-2 mt-20">
                 <p class="text-white text-lg tracking-widest font-semibold">– WELCOME –</p>
                 <img src="{{ asset('images/logoSmall.png') }}" class="w-1668 h-618 mx-auto flex items-center">
-                <p class="text-white text-sm font-medium">Academic Year 2024-2025</p>
+                <p class="text-white text-sm font-medium">Academic Year 2025-2026</p>
             </div>
         </div>
 

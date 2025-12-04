@@ -20,7 +20,7 @@
     
     <body class="font-sans antialiased">
         
-        <div class="min-h-screen bg-gradient-to-b from-[#553FEE]  to-[#288FD9]">
+        <div class="min-h-screen bg-gradient-to-br from-indigo-500 to-blue-400">
 
  
 
