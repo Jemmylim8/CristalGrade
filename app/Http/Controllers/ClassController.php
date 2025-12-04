@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ClassModel;
-use Illuminate\Support\Str;
 use App\Models\Activity;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class ClassController extends Controller
 {
@@ -54,16 +54,19 @@ class ClassController extends Controller
     }
 
     // Edit form
-    public function edit(ClassModel $class)
+    public function edit($classId)
     {
-        
+        $class = ClassModel::findOrFail($classId);
+        $this->checkFacultyOwnership($class);
+
         return view('classes.editclass', compact('class'));
     }
 
-    // Update existing class
-    public function update(Request $request, ClassModel $class)
+    // Update class
+    public function update(Request $request, $classId)
     {
-        
+        $class = ClassModel::findOrFail($classId);
+        $this->checkFacultyOwnership($class);
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -73,34 +76,23 @@ class ClassController extends Controller
             'year_level' => 'required|integer|between:1,4',
         ]);
 
-        $class->update([
-            'name' => $request->name,
-            'subject' => $request->subject,
-            'section' => $request->section,
-            'schedule' => $request->schedule,
-            'year_level' => $request->year_level,
-        ]);
+        $class->update($request->only(['name','subject','section','schedule','year_level']));
 
         return redirect()->route('dashboard.faculty')->with('success', 'Class updated successfully!');
     }
 
     // Delete class
-    public function destroy(ClassModel $class)
+    public function destroy($classId)
     {
-        
+        $class = ClassModel::findOrFail($classId);
+        $this->checkFacultyOwnership($class);
 
-        // Optionally detach all students
         $class->students()->detach();
-
-        // Cascade delete activities/scores
         $class->activities()->delete();
-
         $class->delete();
 
         return redirect()->route('dashboard.faculty')->with('success', 'Class deleted successfully!');
     }
-
-    // Join class
     public function joinClass(Request $request)
     {
         $request->validate([
@@ -114,13 +106,25 @@ class ClassController extends Controller
         }
 
         auth()->user()->classes()->syncWithoutDetaching([$class->id]);
-
+        foreach ($class->activities as $activity) {
+            \App\Models\Score::firstOrCreate([
+                'student_id' => $student->id,
+                'activity_id' => $activity->id,
+            ], [
+                'score' => null,
+                'reminder_sent' => false,
+            ]);
+        }
         return back()->with('success', 'You have successfully joined the class!');
     }
-
     // Show class details
-    public function show(ClassModel $class)
-    {
+    public function show($classId)
+    {   
+
+        $class = ClassModel::findOrFail($classId);
+        $this->checkStudentMembership($class);
+        $this->checkFacultyOwnership($class);
+
         $students = $class->students()->get();
         $activities = $class->activities()->get();
 
@@ -136,9 +140,8 @@ class ClassController extends Controller
             $scores[$r->student_id][$r->activity_id] = $r->score;
         }
 
-        return view('classes.show', compact('class', 'students', 'activities', 'scores'));
+        return view('classes.show', compact('class','students','activities','scores'));
     }
-
     // Year-level view
     public function yearLevel($year_level)
     {

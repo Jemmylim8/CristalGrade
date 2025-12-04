@@ -18,7 +18,9 @@ class Activity extends Model
     'code',
     'is_locked',
     ];
-
+    protected $casts = [
+        'due_date' => 'datetime',
+    ];
 
     public function class()
     {
