@@ -50,7 +50,7 @@
                     </form>
 
                     <p class="text-sm text-gray-600 text-center max-w-md">
-                        {{ __('Click the photo to upload a new one. JPG, PNG or GIF. Max size 2MB.') }}
+                        {{ __('Click the photo to upload a new one. JPG. Max size 2MB.') }}
                     </p>
                 </div>
             

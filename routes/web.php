@@ -14,6 +14,7 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\ProfilePhotoController;
+use App\Http\Controllers\ScoreHistoryController;
 Route::get('/', fn() => view('welcome'));
 
 // Two-Factor Auth
@@ -79,6 +80,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/activities/{activity}/scores', [ScoreController::class, 'showScores'])->name('scores.show');
     Route::get('/activities/{activity}/scores/edit', [ScoreController::class, 'edit'])->name('scores.edit');
     Route::post('/classes/{class}/scores', [ScoreController::class, 'update'])->name('scores.update');
+    Route::get('/classes/{classId}/history', [ScoreHistoryController::class, 'index'])
+    ->name('history.index');
+    Route::get('/my-score-history', [ScoreHistoryController::class, 'showHistory'])
+        ->name('history.student');
 });
 
 // Profile

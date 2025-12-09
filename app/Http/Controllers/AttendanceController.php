@@ -98,7 +98,7 @@ class AttendanceController extends Controller
 
     // Show a single attendance session
     public function show($classId, Attendance $attendance)
-    {   $this->checkStudentMembership($class);
+    {   
 
         $class = \App\Models\ClassModel::findOrFail($classId);
         $records = $attendance->records()->with('student')->get();

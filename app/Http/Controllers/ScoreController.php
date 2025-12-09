@@ -29,7 +29,7 @@ class ScoreController extends Controller
     }
 
     // Save/update scores for a single activity
- public function update(Request $request, $classId)
+public function update(Request $request, $classId)
 {
     $request->validate([
         'scores' => 'required|array',
@@ -40,21 +40,48 @@ class ScoreController extends Controller
 
     foreach ($scoresData as $studentId => $activities) {
         foreach ($activities as $activityId => $scoreValue) {
-            // skip empty inputs
+            // Skip empty inputs
             if ($scoreValue === '' || $scoreValue === null) continue;
 
+            // Get existing score (if any)
+            $existingScore = \App\Models\Score::where('student_id', $studentId)
+                ->where('activity_id', $activityId)
+                ->first();
+
+            $oldScore = $existingScore?->score;     // null if new
+            $newScore = (float) $scoreValue;
+
+            // Log history ONLY if the score changes
+            if ($existingScore && (float)$oldScore !== $newScore) {
+                \App\Models\ScoreHistory::create([
+                    'faculty_id' => auth()->id(),
+                    'student_id' => $studentId,
+                    'class_id'   => $classId,
+                    'component'  => $existingScore->activity->name ?? 'Activity ' . $activityId,
+                    'activity_id'=> $activityId,
+                    'old_score'  => $oldScore,
+                    'new_score'  => $newScore,
+                    'meta'       => [
+                        'ip' => $request->ip(),
+                        'user_agent' => substr($request->userAgent() ?? '', 0, 255),
+                    ],
+                ]);
+            }
+
+            // Save or update score
             \App\Models\Score::updateOrCreate(
                 [
                     'student_id' => (int) $studentId,
                     'activity_id' => (int) $activityId,
                 ],
-                ['score' => (float) $scoreValue]
+                ['score' => $newScore]
             );
         }
     }
 
     return redirect()->back()->with('success', 'Scores saved successfully!');
 }
+
 
 
 

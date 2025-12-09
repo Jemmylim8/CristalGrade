@@ -12,7 +12,7 @@
                 <path fill-rule="evenodd" d="M9.53 2.47a.75.75 0 0 1 0 1.06L4.81 8.25H15a6.75 6.75 0 0 1 0 13.5h-3a.75.75 0 0 1 0-1.5h3a5.25 5.25 0 1 0 0-10.5H4.81l4.72 4.72a.75.75 0 1 1-1.06 1.06l-6-6a.75.75 0 0 1 0-1.06l6-6a.75.75 0 0 1 1.06 0Z"/>
             </svg>
         </a>
-
+        
         {{-- Title Section --}}
         <div class="text-center flex-1 px-4">
             <h1 class="text-3xl font-extrabold uppercase tracking-wider drop-shadow-sm">
@@ -29,13 +29,20 @@
                 </svg>
                 {{ $class->schedule }}
             </div>
-
+            @if(auth()->user()->role === 'faculty')
+            <div class="mt-2">
+            <a href="{{ route('history.index', $class->id) }}"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">
+                View Score History
+            </a>
+        </div>
+            @endif
             {{-- Join Code --}}
             <div class="mt-3 bg-white/15 backdrop-blur-md inline-block px-4 py-1.5 rounded-full shadow-sm border border-white/10">
                 <span class="text-blue-100 font-semibold uppercase tracking-wide">Join Code:</span>
                 <span class="font-bold text-yellow-300 ml-1">{{ $class->join_code }}</span>
             </div>
-
+            
             {{-- Attendance Button --}}
             <div class="mt-4">
                 @if(auth()->user()->role === 'faculty')
@@ -55,9 +62,10 @@
                 @endif
             </div>
         </div>
-
+        
         {{-- Add Activity (Faculty Only) --}}
         @if(auth()->user()->role === 'faculty')
+            
             <a href="{{ route('activities.create', $class->id) }}"
                class="bg-yellow-500 hover:bg-yellow-600 text-white w-16 h-16 flex items-center justify-center rounded-2xl shadow-2xl transition-transform hover:scale-110"
                title="Add Activity">
@@ -254,7 +262,7 @@
         <form id="removeStudentForm" method="POST" style="display:none;">@csrf @method('DELETE')</form>
     </div>
     @endif
-
+    
    {{-- ============================ --}}
 {{-- STUDENT VIEW (SINGLE CODE INPUT) --}}
 {{-- ============================ --}}
@@ -266,6 +274,7 @@
         <h2 class="text-3xl font-bold text-gray-900 mb-2">Your Grades</h2>
         <p class="text-gray-600">View and track your academic performance</p>
     </div>
+    
 
     {{-- Single Activity Code Input --}}
     <div class="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
@@ -283,6 +292,10 @@
                    maxlength="4">
         </div>
     </div>
+    <a href="{{ route('history.student') }}"
+       class="block  px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg text-center hover:bg-blue-500 transition">
+        View My Score History
+    </a>
 
     <form id="studentScoreForm" method="POST" action="{{ route('scores.update', $class->id) }}">
         @csrf
