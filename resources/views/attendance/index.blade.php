@@ -168,7 +168,7 @@ document.getElementById('takeBtn').addEventListener('click', () => {
         return;
     }
 
-    fetch(`/attendance/check/${classId}/${date}`)
+    fetch(`/classes/${classId}/attendance/check/${date}`)
         .then(response => response.json())
         .then(data => {
             // remove any old confirm input
@@ -192,8 +192,8 @@ document.getElementById('takeBtn').addEventListener('click', () => {
             }
         });
 });
-
 </script>
+
 
 
 </x-app-layout>

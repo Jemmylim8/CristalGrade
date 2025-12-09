@@ -7,6 +7,7 @@ use App\Models\Attendance;
 use App\Models\AttendanceRecord;
 use App\Models\ClassModel;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class AttendanceController extends Controller
 {
@@ -97,14 +98,15 @@ class AttendanceController extends Controller
     }
 
     // Show a single attendance session
-    public function show($classId, Attendance $attendance)
-    {   
+ public function show($classId, Attendance $attendance)
+{
+    $class = ClassModel::findOrFail($classId);
+    $records = $attendance->records()->with('student')->get();
 
-        $class = \App\Models\ClassModel::findOrFail($classId);
-        $records = $attendance->records()->with('student')->get();
+    return view('attendance.show', compact('class','attendance','records'));
+}
 
-        return view('attendance.show', compact('class','attendance','records'));
-    }
+
 
     // Update a session (statuses/remarks)
     public function update(Request $request, Attendance $attendance)
@@ -140,6 +142,7 @@ class AttendanceController extends Controller
         return view('attendance.student', compact('class','records'));
     }
 
+
     // PDF export
      public function exportPdf($classId, Request $request)
     {
@@ -155,4 +158,68 @@ class AttendanceController extends Controller
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.attendance', compact('class','sessions','date'));
         return $pdf->download("attendance-{$class->id}-" . ($date ?: 'all') . ".pdf");
     }
+
+
+public function uploadExcuse(Request $request, $id)
+{
+    $request->validate([
+        'excuse_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+    ]);
+
+    $record = AttendanceRecord::findOrFail($id);
+
+    // Delete old file if exists
+    if ($record->excuse_file && Storage::disk('public')->exists($record->excuse_file)) {
+        Storage::disk('public')->delete($record->excuse_file);
+    }
+
+    // Store new file
+    $path = $request->file('excuse_file')->store('excuses', 'public');
+
+    $record->update([
+        'excuse_file' => $path,
+        'excuse_status' => 'Pending', // optional
+    ]);
+
+    return back()->with('success', 'Excuse uploaded/updated successfully!');
+}
+
+public function deleteExcuse($id)
+{
+    $record = AttendanceRecord::findOrFail($id);
+
+    if ($record->excuse_file && Storage::disk('public')->exists($record->excuse_file)) {
+        Storage::disk('public')->delete($record->excuse_file);
+    }
+
+    $record->update([
+        'excuse_file' => null,
+         // optional: revert status
+    ]);
+
+    return back()->with('success', 'Excuse deleted successfully!');
+}
+public function approveExcuse($id)
+{
+    $record = AttendanceRecord::findOrFail($id);
+
+    $record->update([
+        'excuse_status' => 'Approved', // update the correct column
+    ]);
+
+    return back()->with('success', 'Excuse approved successfully!');
+}
+
+public function rejectExcuse($id)
+{
+    $record = AttendanceRecord::findOrFail($id);
+
+    $record->update([
+        'excuse_status' => 'Rejected', // update the correct column
+    ]);
+
+    return back()->with('success', 'Excuse rejected successfully!');
+}
+
+
 }

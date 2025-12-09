@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AttendanceRecord extends Model
 {
-    protected $fillable = ['attendance_id', 'student_id', 'status', 'remarks'];
+    protected $fillable = ['attendance_id', 'student_id', 'status', 'remarks','excuse_file','excuse_status'];
 
     public function attendance()
     {

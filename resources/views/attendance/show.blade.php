@@ -18,12 +18,16 @@
             — Attendance for {{ $attendance->date }}
         </span>
     </h1>
+
+    <!-- Delete Attendance -->
     <form action="{{ route('attendance.destroy', $attendance->id) }}" method="POST"
       onsubmit="return confirm('Delete this attendance?');">
-    @csrf
-    @method('DELETE')
-    <button class="px-4 py-2 bg-red-600 hover:bg-red-800 text-white rounded-xl shadow-md transition font-bold">Delete</button>
-</form>
+        @csrf
+        @method('DELETE')
+        <button class="px-4 py-2 bg-red-600 hover:bg-red-800 text-white rounded-xl shadow-md transition font-bold">
+            Delete Attendance
+        </button>
+    </form>
 
     <!-- Success Message -->
     @if(session('success'))
@@ -32,7 +36,7 @@
         </div>
     @endif
 
-    <!-- Form -->
+    <!-- Update Attendance Form -->
     <form method="POST" action="{{ route('attendance.update', $attendance->id) }}">
         @csrf
         @method('PUT')
@@ -45,6 +49,9 @@
                         <th class="px-6 py-4 font-semibold text-sm uppercase tracking-wide text-center">Student</th>
                         <th class="px-6 py-4 font-semibold text-sm uppercase tracking-wide text-center">Status</th>
                         <th class="px-6 py-4 font-semibold text-sm uppercase tracking-wide text-center">Remarks</th>
+                        <th class="px-6 py-4 font-semibold text-sm uppercase tracking-wide text-center">Excuse File</th>
+                        <th class="px-6 py-4 font-semibold text-sm uppercase tracking-wide text-center">Excuse Status</th>
+                        <th class="px-6 py-4 font-semibold text-sm uppercase tracking-wide text-center">Actions</th>
                     </tr>
                 </thead>
 
@@ -55,9 +62,8 @@
                             {{ $r->student->name ?? $r->student->full_name }}
                         </td>
 
+                        <!-- Status Select -->
                         <td class="px-6 py-4">
-
-                            <!-- Colored Select Using Alpine.js -->
                             <div 
                                 x-data="{ 
                                     v: '{{ $r->status }}', 
@@ -71,7 +77,6 @@
                                     }
                                 }"
                             >
-
                                 <select 
                                     name="records[{{ $r->student_id }}][status]"
                                     x-model="v"
@@ -83,10 +88,10 @@
                                     <option value="late">Late</option>
                                     <option value="excused">Excused</option>
                                 </select>
-
                             </div>
                         </td>
 
+                        <!-- Remarks -->
                         <td class="px-6 py-4">
                             <input 
                                 type="text"
@@ -96,6 +101,57 @@
                                 class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 
                                        focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                             />
+                        </td>
+
+                        <!-- Excuse File -->
+                        <td class="px-6 py-4 text-center">
+                            
+                            @if($r->excuse_file)
+                                <a href="{{ asset('storage/'.$r->excuse_file) }}" target="_blank" class="text-blue-600 underline text-sm">
+                                    View
+                                </a>
+                            @else
+                                —
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            {{$r->excuse_status}}
+                        </td>
+
+                        <!-- Actions -->
+                        <td class="px-6 py-4 text-center flex flex-col space-y-1">
+                            <form></form>
+                            @if($r->excuse_file)
+                                @if($r->excuse_status != 'Approved')
+                                <form action="{{ route('attendance.approveExcuse', $r->id) }}" method="POST">
+                                    @csrf
+                                    
+                                    <button class="px-2 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-500">
+                                        Approve
+                                    </button>
+                                </form>
+                                @endif
+                                @if($r->excuse_status != 'Rejected')
+                                <form action="{{ route('attendance.rejectExcuse', $r->id) }}" method="POST">
+                                    @csrf
+                                    
+                                    <button class="px-2 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-500">
+                                        Reject
+                                    </button>
+                                </form>
+                                @endif
+                                <!-- Optional: Delete -->
+                                <form action="{{ route('attendance.deleteExcuse', $r->id) }}" method="POST" 
+                                    onsubmit="return confirm('Delete this excuse file?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="px-2 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-500">
+                                        Delete
+                                    </button>
+                                </form>
+                            @else
+                                <span class="text-gray-400">—</span>
+                            @endif
                         </td>
                     </tr>
                     @endforeach
