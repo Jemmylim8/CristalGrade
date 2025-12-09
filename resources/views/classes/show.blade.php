@@ -30,12 +30,12 @@
                 {{ $class->schedule }}
             </div>
             @if(auth()->user()->role === 'faculty')
-            <div class="mt-2">
-            <a href="{{ route('history.index', $class->id) }}"
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">
-                View Score History
-            </a>
-        </div>
+            <div class="mt-4">
+                <a href="{{ route('history.index', $class->id) }}"
+                class="inline-flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 group">            
+                    <span class="tracking-wide">View Score History</span>
+                </a>
+            </div>
             @endif
             {{-- Join Code --}}
             <div class="mt-3 bg-white/15 backdrop-blur-md inline-block px-4 py-1.5 rounded-full shadow-sm border border-white/10">
@@ -270,13 +270,31 @@
 
 <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
     <!-- Header Section -->
-    <div class="mb-6">
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">Your Grades</h2>
-        <p class="text-gray-600">View and track your academic performance</p>
-    </div>
-    
+<div class="mb-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Your Grades</h2>
+            <p class="text-gray-600">View and track your academic performance</p>
+        </div>
 
-    {{-- Single Activity Code Input --}}
+        <!-- View Score History Button (RIGHT SIDE + BLUE) -->
+        <a href="{{ route('history.student') }}"
+        class="inline-flex items-center gap-3 px-6 py-3
+          bg-gradient-to-r from-blue-600 to-blue-700 
+          hover:from-blue-700 hover:to-blue-800 
+          text-white font-semibold rounded-xl shadow-md 
+          hover:shadow-lg transition-all duration-300 
+          hover:scale-105 active:scale-95 group">
+    
+    <!-- Text -->
+    <span class="text-base">View My Score History</span>
+</a>
+
+    </div>
+</div>
+
+
+    <!-- Activity Code Input -->
     <div class="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
         <div class="flex items-center gap-4">
             <div class="flex items-center gap-2 flex-1">
@@ -292,11 +310,8 @@
                    maxlength="4">
         </div>
     </div>
-    <a href="{{ route('history.student') }}"
-       class="block  px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg text-center hover:bg-blue-500 transition">
-        View My Score History
-    </a>
 
+    <!-- Activities Table -->
     <form id="studentScoreForm" method="POST" action="{{ route('scores.update', $class->id) }}">
         @csrf
         <div class="overflow-x-auto rounded-xl border border-gray-200">
@@ -322,15 +337,6 @@
                             
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="flex-shrink-0">
-                                        @if($activity->type === 'quiz')
-                                            
-                                        @elseif($activity->type === 'exam')
-                                            
-                                        @else
-                                           
-                                        @endif
-                                    </div>
                                     <div>
                                         <div class="font-semibold text-gray-900">{{ $activity->name }}</div>
                                         <div class="text-xs text-gray-500 uppercase font-medium">{{ $activity->type }}</div>
@@ -438,7 +444,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 @endif
-
 
 
 </div>

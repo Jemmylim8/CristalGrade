@@ -61,7 +61,7 @@
                                     year_level: {{ $class->year_level }}
                                 })"
                                 class="w-10 h-10 flex items-center justify-center rounded-full text-yellow-600 bg-yellow-100 hover:bg-yellow-500 hover:text-white shadow-sm transition"
-                                title="Edit Classes">
+                                title="Edit Class">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-5 h-5" viewBox="0 0 24 24">
                                     <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0L16.862 3.43l3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712L3.651 16.637a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z"/>
                                 </svg>
