@@ -102,24 +102,34 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
     Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
 });
+// Faculty: attendance per class
 Route::middleware(['auth'])->group(function () {
-
-    // Faculty: attendance per class
     Route::get('/classes/{class}/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/classes/{class}/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
     Route::get('/classes/{class}/attendance/{attendance}', [AttendanceController::class, 'show'])->name('attendance.show');
     Route::put('/attendance/{attendance}', [AttendanceController::class, 'update'])->name('attendance.update');
-    Route::get('/attendance/check/{classId}/{date}', [AttendanceController::class, 'check'])
-    ->name('attendance.check');
-    // DELETE ATTENDANCE
-    Route::delete('/attendance/{attendance}', [AttendanceController::class, 'destroy'])
-        ->name('attendance.destroy');
-
+    Route::delete('/attendance/{attendance}', [AttendanceController::class, 'destroy'])->name('attendance.destroy');
     Route::get('/classes/{class}/attendance/pdf', [AttendanceController::class, 'exportPdf'])->name('attendance.exportPdf');
+    Route::get('classes/{class}/attendance/check/{date}', [AttendanceController::class, 'check'])
+    ->name('attendance.check');
 
-    // Student: view their attendance per class
+});
+
+// Student: view their attendance per class & Excuse Letters
+Route::middleware(['auth'])->group(function () {
     Route::get('/student/classes/{class}/attendance', [AttendanceController::class, 'studentView'])->name('attendance.student');
 });
+
+// Excuse file routes
+Route::middleware(['auth'])->group(function () {
+    Route::post('/attendance-records/{id}/upload-excuse', [AttendanceController::class, 'uploadExcuse'])->name('attendance.uploadExcuse');
+    Route::delete('/attendance-records/{id}/delete-excuse', [AttendanceController::class, 'deleteExcuse'])->name('attendance.deleteExcuse');
+
+    // Faculty approve/reject excuses
+    Route::post('/attendance-records/{id}/approve-excuse', [AttendanceController::class, 'approveExcuse'])->name('attendance.approveExcuse');
+    Route::post('/attendance-records/{id}/reject-excuse', [AttendanceController::class, 'rejectExcuse'])->name('attendance.rejectExcuse');
+});
+
 
 // EXPORT PDF FOR SCORES
 Route::get('/faculty/class/{class}/scores/pdf', [PdfController::class, 'exportScores'])
