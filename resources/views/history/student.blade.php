@@ -3,10 +3,11 @@
         
         <h1 class="text-2xl font-bold mb-6">My Score History</h1>
         <a href="{{ route('classes.show', $classId) }}"
-               class="px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-indigo-500">
-                Back to Class
-            </a>
-        <div class="bg-white shadow rounded-lg overflow-x-auto">
+           class="px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-indigo-500">
+            Back to Class
+        </a>
+
+        <div class="bg-white shadow rounded-lg overflow-x-auto mt-4">
         
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
@@ -21,11 +22,13 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse ($history as $item)
                         <tr>
-                            <td class="px-4 py-3 text-sm">{{ $item->activity->title ?? $item->component }}</td>
+                            <td class="px-4 py-3 text-sm">{{ $item->activity?->title ?? $item->component ?? '—' }}</td>
                             <td class="px-4 py-3 text-sm text-red-600 font-semibold">{{ $item->old_score ?? '—' }}</td>
-                            <td class="px-4 py-3 text-sm text-green-600 font-semibold">{{ $item->new_score }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $item->faculty->name }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-600">{{ $item->created_at->format('M d, Y - h:i A') }}</td>
+                            <td class="px-4 py-3 text-sm text-green-600 font-semibold">{{ $item->new_score ?? '—' }}</td>
+                            <td class="px-4 py-3 text-sm">{{ $item->faculty?->name ?? '—' }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-600">
+                                {{ $item->created_at?->format('M d, Y - h:i A') ?? '—' }}
+                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -37,9 +40,11 @@
                 </tbody>
             </table>
 
-            <div class="mt-4">
-                {{ $history->links() }}
-            </div>
+            @if($history->count())
+                <div class="mt-4">
+                    {{ $history->links() }}
+                </div>
+            @endif
 
         </div>
     </div>
