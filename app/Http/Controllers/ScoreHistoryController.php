@@ -31,7 +31,11 @@ class ScoreHistoryController extends Controller
         ->where('student_id', $studentId)
         ->orderBy('created_at', 'desc')  // or changed_at if you have it
         ->paginate(15);  // 15 per page
-    $classId = optional($history->first()->activity)->class_id;
+     $classId = null;
+
+        if ($history->isNotEmpty() && $history->first()->activity) {
+            $classId = $history->first()->activity->class_id;
+        }
     return view('history.student', [
         'history' => $history,
         'classId' => $classId
