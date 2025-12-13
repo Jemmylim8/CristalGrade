@@ -1,61 +1,182 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CristalGrade
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+CristalGrade is a **web-based grading and academic record management system** developed as a **capstone research project** for the Computer Studies Department of Cristal e-College. The system is designed to provide a secure, organized, and reliable platform for managing student grades, class records, and academic monitoring.
 
-## About Laravel
+This repository contains the official implementation used for research evaluation and institutional review.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📌 Project Description
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Traditional grading processes often rely on manual computation, spreadsheets, or fragmented tools, which may lead to errors, delayed feedback, and limited accessibility. CristalGrade addresses these challenges by centralizing grade management into a single web-based system with clear role separation and controlled access.
 
-## Learning Laravel
+The system allows **faculty members** to manage grades and class records, while **students are limited to viewing their academic information only**.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🎯 Objectives
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* To develop a centralized web-based grading system for the department
+* To ensure secure and role-based access to academic records
+* To reduce errors in grade computation and record keeping
+* To provide timely access to academic performance information
+* To support academic monitoring through absence and compliance notifications
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 👥 User Roles and Access
 
-### Premium Partners
+### Faculty
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+* Create and manage class records
+* Input, update, and review student grades
+* View student score history per class
+* Monitor attendance and compliance status
 
-## Contributing
+### Students
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* View enrolled classes
+* View grades or performance results (read-only)
+* Access score history related to their academic activities
 
-## Code of Conduct
+### Administrator (Optional / Future)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+* Manage system users
+* Oversee system configuration and data integrity
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## ✨ Core Features
 
-## License
+* Secure authentication and authorization
+* Role-based access control (Faculty and Students)
+* Class and subject management
+* Grade input and editing (Faculty only)
+* Student grade viewing (Read-only)
+* Score history tracking
+* Absence and compliance notification system
+* Responsive and user-friendly interface
+* Attendance and Excuse Letter submission with approval
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 🛠️ Technology Stack
+
+* **Backend:** Laravel (PHP)
+* **Frontend:** Blade Templates, HTML, CSS, JavaScript
+* **Database:** MySQL
+* **Architecture:** MVC (Model-View-Controller)
+* **Authentication:** Laravel Authentication System
+
+---
+
+## 🏗️ System Architecture
+
+CristalGrade follows the **MVC architecture**:
+
+* **Models:** Handle data structure and database interaction
+* **Views:** Blade templates for user interface presentation
+* **Controllers:** Handle application logic and request processing
+
+This structure ensures maintainability, scalability, and separation of concerns.
+
+---
+
+## 📂 Project Structure
+
+```
+cristalgrade/
+├── app/            # Controllers, Models, Policies
+├── database/       # Migrations and seeders
+├── resources/      # Blade views, CSS, JavaScript
+├── routes/         # Web routes
+├── public/         # Public assets
+└── README.md       # Project documentation
+```
+
+---
+
+## 🚀 Installation and Setup
+
+1. Clone the repository
+
+   ```bash
+   git clone <repository-url>
+   ```
+
+2. Install dependencies
+
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. Configure environment variables
+
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. Configure the database and run migrations
+
+   ```bash
+   php artisan migrate
+   ```
+
+5. Start the development server
+
+   ```bash
+   php artisan serve
+   ```
+
+---
+
+## 🔐 Security Considerations
+
+* All users must be authenticated to access the system
+* Students are restricted to read-only access for grades
+* Faculty permissions are required to modify academic records
+* Server-side validation and access control are enforced
+
+---
+
+## 📄 Research Context
+
+CristalGrade was developed in partial fulfillment of the requirements for the Research Capstone of the Computer Studies Department. The system is intended for academic evaluation, research documentation, and possible institutional deployment.
+
+---
+
+## ⚠️ Limitations
+
+* Requires an active internet connection
+* Available for desktops only
+* Advanced analytics and reporting are not included in the current version
+
+---
+
+## 🔮 Future Enhancements
+
+* Advanced grade analytics and reporting
+* Data visualization dashboards
+* Enhanced mobile responsiveness
+* Integration with other academic systems
+
+---
+
+## 📜 License and Usage
+
+This system is developed for Cristal-e College. Commercial use or redistribution requires formal approval from the developers.
+
+---
+
+## 👨‍💻 Development Team
+
+Stallion Dynamics Research Team
+Jemmy Lim II - Senior Developer
+Schlwyn Sarabia - Junior Developer
+Justin Bolotaulo - Documentation Chairman
+
+---
+
+*CristalGrade – A Secure and Modern Web-Based Grading System*
