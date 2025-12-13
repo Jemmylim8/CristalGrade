@@ -173,9 +173,9 @@ This system is developed for Cristal-e College. Commercial use or redistribution
 ## 👨‍💻 Development Team
 
 Stallion Dynamics Research Team
-Jemmy Lim II - Senior Developer
-Schlwyn Sarabia - Junior Developer
-Justin Bolotaulo - Documentation Chairman
+*Jemmy Lim II - Senior Developer*
+*Schlwyn Sarabia - Junior Developer*
+*Justin Bolotaulo - Documentation Chairman*
 
 ---
 
